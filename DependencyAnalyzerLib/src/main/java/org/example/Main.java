@@ -14,7 +14,5 @@ public class Main {
         VoidVisitor<Void> importVisitor = new ImportVisitor();
 
         importVisitor.visit(cu, null);
-
-        System.out.println("Hello world!");
     }
 }
