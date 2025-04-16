@@ -38,10 +38,6 @@ public class Main {
             new ImportVisitor().visit(StaticJavaParser.parse(file), null);
         });
 
-        VoidVisitor<Void> importVisitor = new ImportVisitor();
-        importVisitor.visit(cu, null);
-
-
 
         System.exit(0);
 
