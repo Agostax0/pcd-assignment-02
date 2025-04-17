@@ -23,10 +23,10 @@ public class ImportRef {
 
     private List<String> navigateImport(Name qualifier, List<String> tree){
         if(qualifier.hasQualifier() && qualifier.getQualifier().isPresent()){
-            tree.addLast(qualifier.getIdentifier());
+            tree.addFirst(qualifier.getIdentifier());
             navigateImport(qualifier.getQualifier().get(), tree);
         }else{
-            tree.addLast(qualifier.getIdentifier());
+            tree.addFirst(qualifier.getIdentifier());
         }
         return tree;
     }
