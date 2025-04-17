@@ -1,6 +1,7 @@
 import com.github.javaparser.StaticJavaParser;
 import org.example.ImportRef;
 import org.example.ImportVisitor;
+import org.example.TreeBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -45,8 +46,33 @@ public class JavaParserTest {
     void testReversePolishAnnotationImportTreeIsNotEmpty() throws FileNotFoundException {
         var imports = new ArrayList<ImportRef>();
         importVisitor.visit(StaticJavaParser.parse(reversePolishAnnotationFile), imports);
-
         assertFalse(imports.stream().map(ImportRef::getPackageTreeOfImport).collect(Collectors.toList()).isEmpty());
+    }
 
+    @Test
+    void testTree() throws FileNotFoundException {
+        var imports = new ArrayList<ImportRef>();
+        importVisitor.visit(StaticJavaParser.parse(reversePolishAnnotationFile), imports);
+        var importRefs = imports.stream().map(ImportRef::getPackageTreeOfImport).toList();
+        /**
+         * [java, util, Stack]
+         * [java, util, stream, Stream]
+         * [java, util, HashMap]
+         * [java, util, concurrent, AbstractExecutorService]
+         * [java, io, IOException]
+         * [com, github, javaparser, ast, ImportDeclaration]
+         */
+
+        /// ->
+
+        /**
+         * [{java,com},{util,io,github},(Stack,stream,HashMap,concurrent,IOException,javaparser),(Stream, AbstractExecutorService,ast),(ImportDeclaration))]
+         */
+
+        TreeBuilder.TreeNode tree = new TreeBuilder.TreeNode("ROOT");
+
+        importRefs.forEach(tree::addChildren);
+
+        tree.print("");
     }
 }

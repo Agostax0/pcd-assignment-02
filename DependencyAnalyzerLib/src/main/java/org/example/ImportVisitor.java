@@ -10,6 +10,5 @@ public class ImportVisitor extends VoidVisitorAdapter<List<ImportRef>> {
     public void visit(ImportDeclaration importDeclaration, List<ImportRef> arg){
         super.visit(importDeclaration, arg);
         arg.add(new ImportRef(importDeclaration));
-        //System.out.println(importDeclaration.getName());
     }
 }
