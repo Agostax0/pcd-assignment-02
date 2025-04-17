@@ -17,15 +17,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        CompilationUnit cu = StaticJavaParser.parse(
-                Files.newInputStream(
-                        Paths.get("src/main/resources/ReversePolishNotation.java")
-                )
-        );
 
         Vertx vertx = Vertx.vertx();
 
@@ -34,12 +30,8 @@ public class Main {
         var fs = vertx.fileSystem();
 
         fs.readFile(path.toAbsolutePath().toString()).onComplete(res -> {
-            var file = res.result().getBytes().toString();
-            new ImportVisitor().visit(StaticJavaParser.parse(file), null);
+            var file = res.result().toString();
+            new ImportVisitor().visit(StaticJavaParser.parse(file), new ArrayList<>());
         });
-
-
-        System.exit(0);
-
     }
 }
