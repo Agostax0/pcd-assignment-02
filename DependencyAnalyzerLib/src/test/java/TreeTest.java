@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -42,5 +41,10 @@ public class TreeTest {
     @Test
     void testFindChild() {
         assertTrue(tree.isChildrenPresent("ImportDeclaration"));
+    }
+
+    @Test
+    void testTreePrint(){
+        System.out.println(tree.toString());
     }
 }

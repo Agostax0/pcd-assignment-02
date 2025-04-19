@@ -43,6 +43,23 @@ public class TreeBuilder {
 
             return isChildrenInLeaves(children, leaves.stream().flatMap(leaf -> leaf.leaves.values().stream()).toList());
         }
+
+        @Override
+        public String toString() {
+            return toStringHelper(0);
+        }
+
+        private String toStringHelper(int indentLevel) {
+            StringBuilder sb = new StringBuilder();
+            String indent = "  ".repeat(indentLevel); // Two spaces per level
+            sb.append(indent).append(name).append("\n");
+
+            for (TreeNode child : leaves.values()) {
+                sb.append(child.toStringHelper(indentLevel + 1));
+            }
+
+            return sb.toString();
+        }
     }
 
 }
