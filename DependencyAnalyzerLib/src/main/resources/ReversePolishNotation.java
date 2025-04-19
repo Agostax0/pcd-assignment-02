@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.concurrent.AbstractExecutorService;
 import java.io.IOException;
 import com.github.javaparser.ast.ImportDeclaration;
+import java.util.Iterator;
 
 /**
  * A Simple Reverse Polish Notation calculator with memory function.
