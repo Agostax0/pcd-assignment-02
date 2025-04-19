@@ -1,11 +1,9 @@
 package org.example;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TreeBuilder {
-    public static class TreeNode{
+    public static class TreeNode {
         String name;
         Map<String, TreeNode> leaves = new HashMap<>();
 
@@ -13,7 +11,7 @@ public class TreeBuilder {
             this.name = name;
         }
 
-        public void addChildren(List<String> children){
+        public void addChildren(final List<String> children){
             if(!children.isEmpty()){
                 String head = children.getFirst();
 
@@ -22,11 +20,28 @@ public class TreeBuilder {
             }
         }
 
-        public void print(String prefix) {
-            System.out.println(prefix + name);
-            for (TreeNode child : leaves.values()) {
-                child.print(prefix + "  ");
+        public Map<String, TreeNode> getLeaves(){
+            return this.leaves;
+        }
+
+        public boolean isChildrenPresent(final String children){
+            return Objects.equals(name, children) || isChildrenInLeaves(children, this.leaves.values());
+        }
+
+        private boolean isChildrenInLeaves(String children, Collection<TreeNode> leaves){
+            if(leaves == null){
+                return false;
             }
+
+            if(leaves.stream().map(leaf -> leaf.name).anyMatch(leafName -> Objects.equals(leafName, children))) {
+                return true;
+            }
+
+            if(leaves.isEmpty()){
+                return false;
+            }
+
+            return isChildrenInLeaves(children, leaves.stream().flatMap(leaf -> leaf.leaves.values().stream()).toList());
         }
     }
 
