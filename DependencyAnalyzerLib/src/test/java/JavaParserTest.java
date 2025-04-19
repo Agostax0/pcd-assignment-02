@@ -1,7 +1,6 @@
 import com.github.javaparser.StaticJavaParser;
 import org.example.ImportRef;
 import org.example.ImportVisitor;
-import org.example.TreeBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +10,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,13 +30,6 @@ public class JavaParserTest {
     void testReversePolishAnnotationImportsIsNotEmpty() throws FileNotFoundException {
         var imports = new ArrayList<ImportRef>();
         importVisitor.visit(StaticJavaParser.parse(reversePolishAnnotationFile), imports);
-        /*
-        import java.util.Stack;
-        import java.util.stream.Stream;
-        import java.util.HashMap;
-        import java.util.concurrent.AbstractExecutorService;
-        import java.io.IOException;
-         */
         assertFalse(imports.isEmpty());
     }
 
