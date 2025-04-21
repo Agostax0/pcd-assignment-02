@@ -2,11 +2,6 @@ package org.javaparser.samples;
 
 import java.util.Stack;
 import java.util.stream.Stream;
-import java.util.HashMap;
-import java.util.concurrent.AbstractExecutorService;
-import java.io.IOException;
-import com.github.javaparser.ast.ImportDeclaration;
-import java.util.Iterator;
 
 /**
  * A Simple Reverse Polish Notation calculator with memory function.

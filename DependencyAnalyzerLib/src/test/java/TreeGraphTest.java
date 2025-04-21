@@ -24,7 +24,7 @@ public class TreeGraphTest {
     private List<List<String>> importRefs;
     @BeforeEach
     void beforeEach() throws IOException {
-        final Path reversePolishAnnotationPath = Paths.get("D:\\pcd\\DependencyAnalyzerLib\\src\\main\\resources\\ReversePolishNotation.java");
+        final Path reversePolishAnnotationPath = Paths.get("D:\\pcd\\DependencyAnalyzerLib\\src\\main\\resources\\withjavautil\\ReversePolishNotation.java");
         final File reversePolishAnnotationFile = reversePolishAnnotationPath.toFile();
         ImportVisitor importVisitor = new ImportVisitor();
         var imports = new ArrayList<ImportRef>();
