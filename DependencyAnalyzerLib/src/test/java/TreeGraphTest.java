@@ -49,13 +49,13 @@ public class TreeGraphTest {
     void testTreeGraphContainsNode(){
         importRefs.forEach(tree::addConnections);
 
-        assertTrue(tree.getNodes().contains("java"));
+        assertTrue(tree.hasNode("java"));
     }
 
     @Test
-    void testTreeGraphContainsArch(){
+    void testTreeGraphContainsArc(){
         importRefs.forEach(tree::addConnections);
 
-        assertTrue(tree.getArcs().contains(new Pair<>("java","util")));
+        assertTrue(tree.hasArc(new Pair<>("java","util")));
     }
 }
