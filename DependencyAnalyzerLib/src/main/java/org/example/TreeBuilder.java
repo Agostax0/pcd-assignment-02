@@ -81,6 +81,11 @@ public class TreeBuilder {
 
         }
 
+        public void addTree(final TreeGraph newTree){
+            this.nodes.addAll(newTree.nodes);
+            this.arcs.addAll(newTree.arcs);
+        }
+
         public boolean hasNode(final String node){
             return this.nodes.stream().map(it -> it.nodeName).anyMatch(nodeName -> Objects.equals(nodeName, node));
         }
