@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class JavaParserTest {
 
-    private final Path reversePolishAnnotationPath = Paths.get("D:\\pcd\\DependencyAnalyzerLib\\src\\main\\resources\\ReversePolishNotation.java");
+    private final Path reversePolishAnnotationPath = Paths.get("D:\\pcd\\DependencyAnalyzerLib\\src\\main\\resources\\withjavautil\\ReversePolishNotation.java");
     private final File reversePolishAnnotationFile = reversePolishAnnotationPath.toFile();
 
     private ImportVisitor importVisitor;

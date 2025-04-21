@@ -25,7 +25,7 @@ public class Main {
 
         Vertx vertx = Vertx.vertx();
 
-        var path = Paths.get("D:\\pcd\\DependencyAnalyzerLib\\src\\main\\resources\\ReversePolishNotation.java");
+        var path = Paths.get("D:\\pcd\\DependencyAnalyzerLib\\src\\main\\resources\\withjavautil\\ReversePolishNotation.java");
 
         var fs = vertx.fileSystem();
 
