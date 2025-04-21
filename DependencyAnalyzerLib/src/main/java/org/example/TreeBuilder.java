@@ -2,6 +2,7 @@ package org.example;
 
 import com.github.javaparser.utils.Pair;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TreeBuilder {
     public static class TreeNode {
@@ -84,20 +85,20 @@ public class TreeBuilder {
             return this.nodes.stream().map(it -> it.nodeName).anyMatch(nodeName -> Objects.equals(nodeName, node));
         }
 
-        public Set<Pair<GraphNode, GraphNode>> getArcs() {
-            return arcs;
+        public Set<Pair<String, String>> getArcs() {
+            return this.arcs.stream().map(it -> new Pair<>(it.a.nodeName, it.b.nodeName)).collect(Collectors.toSet());
         }
 
-        public Set<GraphNode> getNodes() {
-            return nodes;
+        public Set<String> getNodes() {
+            return this.nodes.stream().map(it -> it.nodeName).collect(Collectors.toSet());
         }
 
 
         public boolean hasArc(Pair<String, String> arc) {
-            return arcs.stream().map(it -> new Pair<>(it.a.nodeName, it.b.nodeName)).anyMatch(e -> e.equals(arc));
+            return this.arcs.stream().map(it -> new Pair<>(it.a.nodeName, it.b.nodeName)).anyMatch(e -> e.equals(arc));
         }
 
-        public static class GraphNode{
+        private static class GraphNode{
             private final String nodeName;
             private final int nodeLevel;
 
