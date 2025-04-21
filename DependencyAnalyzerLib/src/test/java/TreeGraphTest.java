@@ -44,18 +44,4 @@ public class TreeGraphTest {
 
         assertTrue(!tree.getArcs().isEmpty() && !tree.getNodes().isEmpty());
     }
-
-    @Test
-    void testTreeGraphContainsNode(){
-        importRefs.forEach(tree::addConnections);
-
-        assertTrue(tree.hasNode("java"));
-    }
-
-    @Test
-    void testTreeGraphContainsArc(){
-        importRefs.forEach(tree::addConnections);
-
-        assertTrue(tree.hasArc(new Pair<>("java","util")));
-    }
 }

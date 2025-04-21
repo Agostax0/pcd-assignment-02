@@ -40,7 +40,7 @@ public class TreeNodeTest {
 
     @Test
     void testFindChild() {
-        assertTrue(tree.isChildrenPresent("ImportDeclaration"));
+        assertTrue(tree.isChildrenPresent("Stack"));
     }
 
     @Test
