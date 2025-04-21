@@ -1,5 +1,6 @@
 package org.example;
 
+import com.github.javaparser.utils.Pair;
 import java.util.*;
 
 public class TreeBuilder {
@@ -51,7 +52,7 @@ public class TreeBuilder {
 
         private String toStringHelper(int indentLevel) {
             StringBuilder sb = new StringBuilder();
-            String indent = "  ".repeat(indentLevel); // Two spaces per level
+            String indent = "\t".repeat(indentLevel);
             sb.append(indent).append(name).append("\n");
 
             for (TreeNode child : leaves.values()) {
@@ -60,6 +61,27 @@ public class TreeBuilder {
 
             return sb.toString();
         }
+    }
+
+    public static class TreeGraph{
+        final Set<String> nodes = new HashSet<>();
+        final Set<Pair<String,String>> arcs = new HashSet<>();
+
+        public TreeGraph(){}
+
+        public void addConnections(final List<String> path){
+            this.nodes.addAll(path);
+            path.stream().flatMap(i -> path.stream().filter(j -> !Objects.equals(i, j)).map(j -> new Pair<>(i, j))).forEach(this.arcs::add);
+        }
+
+        public Set<Pair<String, String>> getArcs() {
+            return arcs;
+        }
+
+        public Set<String> getNodes() {
+            return nodes;
+        }
+
     }
 
 }
