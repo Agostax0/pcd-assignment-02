@@ -6,4 +6,8 @@ public class DepsReport {
     protected DepsReport(TreeBuilder.TreeGraph treeGraph){
         this.treeGraph = treeGraph;
     }
+
+    public TreeBuilder.TreeGraph getGraph(){
+        return treeGraph;
+    }
 }

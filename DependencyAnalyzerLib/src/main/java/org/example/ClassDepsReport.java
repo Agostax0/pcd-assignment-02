@@ -7,9 +7,4 @@ public class ClassDepsReport extends DepsReport{
     public ClassDepsReport(final TreeGraph treeGraph){
         super(treeGraph);
     }
-
-    public TreeGraph getGraph(){
-        return treeGraph;
-    }
-
 }
