@@ -2,20 +2,16 @@ package org.example;
 
 import com.github.javaparser.StaticJavaParser;
 import io.vertx.core.Future;
-import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
-import io.vertx.core.buffer.Buffer;
 import io.vertx.core.file.FileSystem;
 import javassist.NotFoundException;
 
-import javax.lang.model.type.ArrayType;
-import java.nio.file.NotDirectoryException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
 public final class DependencyAnalyserLib {
-
-    public static Future<ClassDepsReport> getClassDependencies(String path) throws NotFoundException {
+    private DependencyAnalyserLib(){}
+    public static Future<ClassDepsReport> getClassDependencies(String path) {
         Vertx vertx = Vertx.vertx();
         FileSystem fs = vertx.fileSystem();
 
