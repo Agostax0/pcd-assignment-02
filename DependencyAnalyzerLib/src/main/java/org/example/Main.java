@@ -23,15 +23,10 @@ import java.util.ArrayList;
 public class Main {
     public static void main(String[] args) throws Exception {
 
-        Vertx vertx = Vertx.vertx();
 
         var path = Paths.get("D:\\pcd\\DependencyAnalyzerLib\\src\\main\\resources\\withjavautil\\ReversePolishNotation.java");
 
-        var fs = vertx.fileSystem();
+        DependencyAnalyserLib.getClassDependencies(path.toString()).onComplete(res -> System.out.println(res.result().treeGraph.getNodes()));
 
-        fs.readFile(path.toAbsolutePath().toString()).onComplete(res -> {
-            var file = res.result().toString();
-            new ImportVisitor().visit(StaticJavaParser.parse(file), new ArrayList<>());
-        });
     }
 }
