@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class DependencyAnalyzerLibTest {
     private final Path filePath = Paths.get("D:\\pcd\\DependencyAnalyzerLib\\src\\main\\resources\\withjavautil\\ReversePolishNotation.java");
+    private final Path packagePath = Paths.get("D:\\pcd\\DependencyAnalyzerLib\\src\\main\\resources\\withjavautil\\");
 
     private final Path nonExistingFilePath = Paths.get("D:\\pcd\\DependencyAnalyzerLib\\src\\main\\resources\\withjavautil\\TungTungTungTungSahur.java");
 
@@ -26,6 +27,20 @@ public class DependencyAnalyzerLibTest {
         DependencyAnalyserLib.getClassDependencies(nonExistingFilePath.toString()).onComplete(res -> {
             var report = res.result();
         }).onFailure(throwed -> assertInstanceOf(NotFoundException.class, throwed));
+    }
 
+
+    @Test
+    void testCorrectClassDependencyNodes(){
+        DependencyAnalyserLib.getClassDependencies(filePath.toString()).onComplete(res -> {
+            System.out.println(res.result().getGraph().getNodes());
+        });
+    }
+
+    @Test
+    void testCorrectPackageDependencyNodes(){
+        DependencyAnalyserLib.getPackageDependencies(packagePath.toString()).onComplete(res -> {
+            System.out.println(res.result().getGraph().getNodes());
+        });
     }
 }

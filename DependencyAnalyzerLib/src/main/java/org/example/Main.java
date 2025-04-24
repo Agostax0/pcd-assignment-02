@@ -16,17 +16,21 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
 
 public class Main {
+    private static final Path filePath = Paths.get("D:\\pcd\\DependencyAnalyzerLib\\src\\main\\resources\\withjavautil\\ReversePolishNotation.java");
+    private static final Path packagePath = Paths.get("D:\\pcd\\DependencyAnalyzerLib\\src\\main\\resources\\withoutjavautil\\");
+
     public static void main(String[] args) throws Exception {
 
 
-        var path = Paths.get("D:\\pcd\\DependencyAnalyzerLib\\src\\main\\resources\\withjavautil\\ReversePolishNotation.java");
 
-        DependencyAnalyserLib.getClassDependencies(path.toString()).onComplete(res -> System.out.println(res.result().treeGraph.getNodes()));
-
+        DependencyAnalyserLib.getPackageDependencies(packagePath.toString()).onComplete(res -> {
+            System.out.println(res.result().getGraph().getNodes());
+        });
     }
 }
