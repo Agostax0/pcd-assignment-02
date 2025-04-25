@@ -23,13 +23,12 @@ import java.util.ArrayList;
 
 public class Main {
     private static final Path filePath = Paths.get("D:\\pcd\\DependencyAnalyzerLib\\src\\main\\resources\\withjavautil\\ReversePolishNotation.java");
-    private static final Path packagePath = Paths.get("C:\\Users\\agost\\IdeaProjects\\pcd-assignment-02\\DependencyAnalyzerLib\\src\\main\\resources\\");
+    private static final Path packagePath = Paths.get("C:\\Users\\agost\\IdeaProjects\\pcd-assignment-02\\DependencyAnalyzerLib\\");
 
     public static void main(String[] args) throws Exception {
 
         DependencyAnalyserLib.getProjectDependencies(packagePath.toString()).onComplete(res -> {
-            if(res.failed()){ System.out.println("Failed");}
-
+            if(res.failed() && res.result() == null){ System.out.println("Failed " + res.cause().toString());}
             else System.out.println(res.result().getGraph().getNodes() + "\n" + res.result().getGraph().getArcs());
         }).onFailure(Throwable::printStackTrace);
 
