@@ -72,13 +72,13 @@ public final class DependencyAnalyserLib {
                 return correctPaths;
             });
         }).compose(filePaths -> {
-            List<Future> classReps = new ArrayList<>();
+            List<Future<ClassDepsReport>> classReps = new ArrayList<>();
 
             for (var filePath : filePaths) {
                 classReps.add(getClassDependencies(filePath));
             }
 
-            return CompositeFuture.all(classReps).map(classReports -> {
+            return Future.all(classReps).map(classReports -> {
                 List<ClassDepsReport> reports = new ArrayList<>();
 
                 for (int i = 0; i < classReports.size(); i++) {
@@ -111,7 +111,7 @@ public final class DependencyAnalyserLib {
                     return fs.readDir(path);
                 })
                 .compose(elemPaths -> {
-                    List<Future> depsList = new ArrayList<>();
+                    List<Future<TreeBuilder.TreeGraph>> depsList = new ArrayList<>();
                     for (var elemPath : elemPaths) {
 
                         depsList.add(fs.lprops(elemPath).compose(elemProps -> {
@@ -123,7 +123,7 @@ public final class DependencyAnalyserLib {
                             }
                         }));
                     }
-                    return CompositeFuture.all(depsList).map(fileReps -> {
+                    return Future.all(depsList).map(fileReps -> {
                         List<TreeBuilder.TreeGraph> graphs = new ArrayList<>();
                         for (int i = 0; i < fileReps.size(); i++) {
                             if (fileReps.succeeded(i)) graphs.add(fileReps.resultAt(i));
