@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 public class Main {
     private static final Path filePath = Paths.get("D:\\pcd\\DependencyAnalyzerLib\\src\\main\\resources\\withjavautil\\ReversePolishNotation.java");
-    private static final Path packagePath = Paths.get("C:\\Users\\agost\\IdeaProjects\\pcd-assignment-02\\DependencyAnalyzerLib\\");
+    private static final Path packagePath = Paths.get("D:\\pcd\\DependencyAnalyzerLib\\");
 
     public static void main(String[] args) throws Exception {
 
