@@ -1,9 +1,6 @@
 package org.example;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class TreeGraph{
@@ -13,14 +10,16 @@ public class TreeGraph{
     public TreeGraph(){}
 
     public void addConnections(final List<String> path){
+        List<GraphNode> graphNodes = new ArrayList<>();
+
         for(int i = 0; i < path.size(); i++){
-            nodes.add(new GraphNode(path.get(i), i));
+            graphNodes.add(new GraphNode(path.get(i), i));
         }
+        nodes.addAll(graphNodes);
 
         for(int i = 0; i < path.size() - 1; i++){
-            arcs.add(new Pair<>(new GraphNode(path.get(i), i), new GraphNode(path.get(i + 1), i + 1)));
+            arcs.add(new Pair<>(graphNodes.get(i), graphNodes.get(i + 1)));
         }
-
     }
 
     public void addTree(final TreeGraph newTree){

@@ -3,6 +3,7 @@ package org.example;
 import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.PublishSubject;
+import org.example.TreeGraph.GraphNode;
 
 import javax.swing.*;
 import java.awt.*;
@@ -47,16 +48,41 @@ public class TreePanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        int verticalSpacing = 100;
-        int horizontalSpacing = 80;
-        int startY = 50;
-
         Graphics2D g2 = (Graphics2D) g;
         g2.setStroke(new BasicStroke(2));
 
         // Draw arcs
         g2.setColor(Color.BLACK);
 
+        var width = this.getWidth();
+        var height = this.getHeight();
+
+        int nodeColumnSize = 0;
+        if(!drawnGraph.nodes.isEmpty())
+        /**
+         *
+         * | com 0 | github 1 | javaparser 2 | utils 3 | JavaParser 4 |
+         * | java 0 | util 1 | Stack 2 |
+         */
+            nodeColumnSize = width / drawnGraph.nodes.stream().map(GraphNode::getNodeLevel).max(Comparator.naturalOrder()).get();
+
+        int nodeRowSize = 0;
+        if(drawnGraph.arcs.isEmpty()){
+            nodeRowSize = 1;//height / Collections.max();
+            drawnGraph.nodes.stream().max((n1, n2) -> {
+                return Math.toIntExact(drawnGraph.arcs.stream().filter(arc -> arc.b.getNodeLevel() == n1.getNodeLevel()).count())
+                        - Math.toIntExact(drawnGraph.arcs.stream().filter(arc -> arc.b.getNodeLevel() == n2.getNodeLevel()).count());
+            });
+
+        }
+
+
+
+        for(var node : drawnGraph.nodes){
+
+
+
+        }
 
     }
 }
