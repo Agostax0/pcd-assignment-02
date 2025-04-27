@@ -8,4 +8,13 @@ public class Pair<A, B> {
         this.a = a1;
         this.b = b1;
     }
+
+
+    @Override
+    public String toString() {
+        return "Pair{" +
+                "a=" + a +
+                ", b=" + b +
+                '}';
+    }
 }

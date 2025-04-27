@@ -15,11 +15,12 @@ public class TreeGraph{
         for(int i = 0; i < path.size(); i++){
             graphNodes.add(new GraphNode(path.get(i), i));
         }
-        nodes.addAll(graphNodes);
 
         for(int i = 0; i < path.size() - 1; i++){
             arcs.add(new Pair<>(graphNodes.get(i), graphNodes.get(i + 1)));
         }
+
+        nodes.addAll(graphNodes);
     }
 
     public void addTree(final TreeGraph newTree){
@@ -77,11 +78,14 @@ public class TreeGraph{
             return nodeLevel;
         }
 
+
         @Override
         public String toString() {
             return "GraphNode{" +
                     "nodeName='" + nodeName + '\'' +
                     ", nodeLevel=" + nodeLevel +
+                    ", x=" + x +
+                    ", y=" + y +
                     '}';
         }
     }
