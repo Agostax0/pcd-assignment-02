@@ -74,7 +74,7 @@ public class TreeGraph{
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             GraphNode graphNode = (GraphNode) o;
-            return Objects.equals(nodeName, graphNode.nodeName);
+            return Objects.equals(nodeLevel, graphNode.nodeLevel) && Objects.equals(nodeName, graphNode.nodeName);
         }
 
         @Override
