@@ -1,5 +1,7 @@
 package org.example;
 
+import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.view.mxGraph;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.PublishSubject;
 import org.example.TreeGraph.GraphNode;
@@ -35,6 +37,8 @@ public class TreePanel extends JPanel {
                 .subscribe(graph -> {
                     drawnGraph.addTree(graph);
                 });
+
+
     }
 
     public TreePanel(TreeGraph graph) {
@@ -51,20 +55,11 @@ public class TreePanel extends JPanel {
         computeNodesPositions();
 
         g.setColor(Color.BLACK);
-//        for(var level : treeToDisplay.keySet()){
-//            for(var node: treeToDisplay.get(level)){
-//                g.fillOval(node.x, node.y, 5, 5);
-//                g.drawString(node.getNodeName(), node.x, node.y - 7);
-//            }
-//        }
 
         for(var node : drawnGraph.nodes){
             g.fillOval(node.x, node.y, 5, 5);
             g.drawString(node.getNodeName(), node.x, node.y - 7);
         }
-
-
-        //System.out.println(drawnGraph.arcs);
 
         for(var arc: drawnGraph.arcs){
             g.drawLine(arc.a.x+2, arc.a.y+2, arc.b.x+2, arc.b.y+2);
@@ -114,17 +109,24 @@ public class TreePanel extends JPanel {
                             it.getNodeLevel() == finalI && !alreadyPresentNodes.contains(it))
                     .toList(); //list of all nodes in the current level not already added to the map
 
-
-            System.out.println("level: " + i + "\n" + currentLevelNodes);
+            if(currentLevelNodes.isEmpty()){
+                currentLevelNodes = alreadyPresentNodes;
+            }
+            else{
+                alreadyPresentNodes.addAll(currentLevelNodes);
+            }
 
             for(var currentLevelNode : currentLevelNodes){ //adding each node's children in order
                 if(orderedTree.containsKey(i+1)){
                     var childNodes = orderedTree.get(i+1);
-                    childNodes.addAll(drawnGraph.arcs.stream().filter(it -> it.a.equals(currentLevelNode)).map(it-> it.b).filter(it -> !childNodes.contains(it)).toList());
+                    (drawnGraph.arcs.stream()
+                            .filter(it -> it.a.equals(currentLevelNode))
+                            .map(it-> it.b)
+                            .filter(it -> !childNodes.contains(it)).toList()).forEach(childNodes::add);
                 }
 
             }
-            alreadyPresentNodes.addAll(currentLevelNodes);
+
 
         }
 
@@ -137,8 +139,6 @@ public class TreePanel extends JPanel {
                 currentNode.y = verticalOffsetBetweenNodes * (j + 1); //based on how many nodes have been added to the current level
             }
         }
-
-        //System.out.println(drawnGraph.arcs.stream().filter(it-> Objects.equals(it.a.getNodeName(), "util")).toList());
 
         System.out.println(orderedTree);
 
