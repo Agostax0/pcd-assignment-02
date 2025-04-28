@@ -17,7 +17,19 @@ public class TreeGraph{
         }
 
         for(int i = 0; i < path.size() - 1; i++){
-            arcs.add(new Pair<>(graphNodes.get(i), graphNodes.get(i + 1)));
+            var start = graphNodes.get(i);
+            var end = graphNodes.get(i + 1);
+
+            GraphNode finalStart = start;
+            if(arcs.stream().map(it -> it.a).anyMatch(it -> it.equals(finalStart)))
+                start = arcs.stream().map(it -> it.a).filter(it -> it.equals(finalStart)).findFirst().orElse(start);
+
+            GraphNode finalEnd = end;
+            if(arcs.stream().map(it -> it.b).anyMatch(it -> it.equals(finalEnd))) {
+                end = arcs.stream().map(it -> it.b).filter(it -> it.equals(finalEnd)).findFirst().orElse(end);
+            }
+
+            arcs.add(new Pair<>(start, end));
         }
 
         nodes.addAll(graphNodes);
@@ -62,7 +74,7 @@ public class TreeGraph{
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             GraphNode graphNode = (GraphNode) o;
-            return nodeLevel == graphNode.nodeLevel && Objects.equals(nodeName, graphNode.nodeName);
+            return Objects.equals(nodeName, graphNode.nodeName);
         }
 
         @Override

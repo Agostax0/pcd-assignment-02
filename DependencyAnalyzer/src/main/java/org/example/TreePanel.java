@@ -39,7 +39,6 @@ public class TreePanel extends JPanel {
 
     public TreePanel(TreeGraph graph) {
         SwingUtilities.invokeLater(() -> {
-            computeNodesPositions();
             drawnGraph.addTree(graph);
         });
     }
@@ -47,15 +46,29 @@ public class TreePanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-
-        Graphics2D g2 = (Graphics2D) g;
-        g2.setStroke(new BasicStroke(2));
-
-        // Draw arcs
-        g2.setColor(Color.BLACK);
+        setBackground(Color.WHITE);
 
         computeNodesPositions();
 
+        g.setColor(Color.BLACK);
+//        for(var level : treeToDisplay.keySet()){
+//            for(var node: treeToDisplay.get(level)){
+//                g.fillOval(node.x, node.y, 5, 5);
+//                g.drawString(node.getNodeName(), node.x, node.y - 7);
+//            }
+//        }
+
+        for(var node : drawnGraph.nodes){
+            g.fillOval(node.x, node.y, 5, 5);
+            g.drawString(node.getNodeName(), node.x, node.y - 7);
+        }
+
+
+        //System.out.println(drawnGraph.arcs);
+
+        for(var arc: drawnGraph.arcs){
+            g.drawLine(arc.a.x+2, arc.a.y+2, arc.b.x+2, arc.b.y+2);
+        }
     }
 
     private void computeNodesPositions() {
@@ -89,9 +102,9 @@ public class TreePanel extends JPanel {
         int numLevels = numCols;
 
         Map<Integer, List<GraphNode>> orderedTree = new HashMap<>();
-        for (int i = 0; i < numLevels; i++) orderedTree.put(i, new ArrayList<>());
+        for (int i = 0; i <= numLevels; i++) orderedTree.put(i, new ArrayList<>());
 
-        for (int i = 0; i < numLevels; i++) {
+        for (int i = 0; i <= numLevels; i++) {
             int finalI = i;
 
             var alreadyPresentNodes = orderedTree.get(i);
@@ -101,18 +114,21 @@ public class TreePanel extends JPanel {
                             it.getNodeLevel() == finalI && !alreadyPresentNodes.contains(it))
                     .toList(); //list of all nodes in the current level not already added to the map
 
-            for(var currentLevelNode : currentLevelNodes){ //adding each node's children in order
-                var childNodes = orderedTree.get(i+1);
-                if(childNodes != null)
-                    childNodes.addAll(drawnGraph.arcs.stream().filter(it -> it.a.equals(currentLevelNode)).map(it-> it.b).filter(it -> !childNodes.contains(it)).toList());
-            }
 
+            System.out.println("level: " + i + "\n" + currentLevelNodes);
+
+            for(var currentLevelNode : currentLevelNodes){ //adding each node's children in order
+                if(orderedTree.containsKey(i+1)){
+                    var childNodes = orderedTree.get(i+1);
+                    childNodes.addAll(drawnGraph.arcs.stream().filter(it -> it.a.equals(currentLevelNode)).map(it-> it.b).filter(it -> !childNodes.contains(it)).toList());
+                }
+
+            }
             alreadyPresentNodes.addAll(currentLevelNodes);
+
         }
 
-//        System.out.println(drawnGraph.arcs.stream().filter(node -> node.a.getNodeName().equals("util")).toList());
-
-        for (int i = 0; i < numLevels; i++) {
+        for (int i = 0; i <= numLevels; i++) {
             var orderedNodes = orderedTree.get(i);
 
             for(int j = 0; j < orderedNodes.size(); j++){
@@ -121,6 +137,8 @@ public class TreePanel extends JPanel {
                 currentNode.y = verticalOffsetBetweenNodes * (j + 1); //based on how many nodes have been added to the current level
             }
         }
+
+        //System.out.println(drawnGraph.arcs.stream().filter(it-> Objects.equals(it.a.getNodeName(), "util")).toList());
 
         System.out.println(orderedTree);
 
