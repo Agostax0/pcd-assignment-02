@@ -1,12 +1,14 @@
 import com.github.javaparser.StaticJavaParser;
-import org.example.*;
+import org.example.report.PackageDepsReport;
+import org.example.visitor.DependencyRef;
+import org.example.visitor.DependencyVisitor;
+import org.example.visitor.TreeBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -28,14 +30,14 @@ public class PackageDepsReportTest {
 
 
         Arrays.stream(Objects.requireNonNull(path.toFile().listFiles())).forEach((file -> {
-            ImportVisitor importVisitor = new ImportVisitor();
-            var imports = new ArrayList<ImportRef>();
+            DependencyVisitor dependencyVisitor = new DependencyVisitor();
+            var dependencyRef = new DependencyRef();
             try {
-                importVisitor.visit(StaticJavaParser.parse(file), imports);
+                dependencyVisitor.visit(StaticJavaParser.parse(file), dependencyRef);
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
             }
-            this.importRefs = imports.stream().map(ImportRef::getPackageTreeOfImport).toList();
+            this.importRefs = dependencyRef.getImportsTrees();
 
             var fileTree = new TreeBuilder.TreeGraph();
 

@@ -1,6 +1,6 @@
-package org.example;
+package org.example.report;
 
-import static org.example.TreeBuilder.*;
+import static org.example.visitor.TreeBuilder.*;
 
 public class ClassDepsReport extends DepsReport{
 

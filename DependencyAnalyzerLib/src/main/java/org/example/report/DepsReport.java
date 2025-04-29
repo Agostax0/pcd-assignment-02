@@ -1,4 +1,6 @@
-package org.example;
+package org.example.report;
+
+import org.example.visitor.TreeBuilder;
 
 public class DepsReport {
     protected TreeBuilder.TreeGraph treeGraph;

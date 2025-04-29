@@ -1,12 +1,14 @@
 import com.github.javaparser.StaticJavaParser;
-import org.example.*;
+import org.example.report.ProjectDepsReport;
+import org.example.visitor.DependencyRef;
+import org.example.visitor.DependencyVisitor;
+import org.example.visitor.TreeBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -16,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class ProjectDepsReportTest {
-    final Path srcPath = Paths.get("D:\\pcd\\DependencyAnalyzerLib\\src\\main\\resources\\");
+    final Path srcPath = Paths.get("src\\main\\resources\\");
 
 
     private ProjectDepsReport projectDepsReport;
@@ -36,14 +38,14 @@ public class ProjectDepsReportTest {
                 }
             }
             else{
-                ImportVisitor importVisitor = new ImportVisitor();
-                var imports = new ArrayList<ImportRef>();
+                DependencyVisitor dependencyVisitor = new DependencyVisitor();
+                var dependencyRefs = new DependencyRef();
                 try {
-                    importVisitor.visit(StaticJavaParser.parse(file), imports);
+                    dependencyVisitor.visit(StaticJavaParser.parse(file), dependencyRefs);
                 } catch (FileNotFoundException e) {
                     throw new RuntimeException(e);
                 }
-                this.importRefs = imports.stream().map(ImportRef::getPackageTreeOfImport).toList();
+                this.importRefs = dependencyRefs.getImportsTrees();
 
                 var fileTree = new TreeBuilder.TreeGraph();
 

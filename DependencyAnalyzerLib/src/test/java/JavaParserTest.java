@@ -1,6 +1,6 @@
 import com.github.javaparser.StaticJavaParser;
-import org.example.ImportRef;
-import org.example.ImportVisitor;
+import org.example.visitor.DependencyRef;
+import org.example.visitor.DependencyVisitor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -9,34 +9,41 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class JavaParserTest {
 
-    private final Path reversePolishAnnotationPath = Paths.get("D:\\pcd\\DependencyAnalyzerLib\\src\\main\\resources\\withjavautil\\ReversePolishNotation.java");
+    private final Path reversePolishAnnotationPath = Paths.get("src\\main\\resources\\withjavautil\\ReversePolishNotation.java");
     private final File reversePolishAnnotationFile = reversePolishAnnotationPath.toFile();
 
-    private ImportVisitor importVisitor;
+    private DependencyVisitor dependencyVisitor;
 
     @BeforeEach
     void beforeEach() throws IOException {
-        importVisitor = new ImportVisitor();
+        dependencyVisitor = new DependencyVisitor();
     }
 
     @Test
     void testReversePolishAnnotationImportsIsNotEmpty() throws FileNotFoundException {
-        var imports = new ArrayList<ImportRef>();
-        importVisitor.visit(StaticJavaParser.parse(reversePolishAnnotationFile), imports);
-        assertFalse(imports.isEmpty());
+        var dependencyRef = new DependencyRef();
+        dependencyVisitor.visit(StaticJavaParser.parse(reversePolishAnnotationFile), dependencyRef);
+        assertFalse(dependencyRef.importDeclarations.isEmpty());
     }
 
     @Test
-    void testReversePolishAnnotationImportTreeIsNotEmpty() throws FileNotFoundException {
-        var imports = new ArrayList<ImportRef>();
-        importVisitor.visit(StaticJavaParser.parse(reversePolishAnnotationFile), imports);
-        assertFalse(imports.stream().map(ImportRef::getPackageTreeOfImport).collect(Collectors.toList()).isEmpty());
+    void testReversePolishAnnotationPackageIsNotNull() throws FileNotFoundException {
+        var dependencyRef = new DependencyRef();
+        dependencyVisitor.visit(StaticJavaParser.parse(reversePolishAnnotationFile), dependencyRef);
+        assertNotNull(dependencyRef.packageDeclaration);
     }
+
+    @Test
+    void testReversePolishAnnotationPackageIsNotEmpty() throws FileNotFoundException{
+        var dependencyRef = new DependencyRef();
+        dependencyVisitor.visit(StaticJavaParser.parse(reversePolishAnnotationFile), dependencyRef);
+        assertFalse(dependencyRef.getPackageTree().isEmpty());
+    }
+
+
 }

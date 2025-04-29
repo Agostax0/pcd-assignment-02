@@ -1,14 +1,15 @@
 package org.example;
 
-import com.github.javaparser.StaticJavaParser;
-import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.file.FileSystem;
 import javassist.NotFoundException;
-import org.checkerframework.checker.units.qual.A;
+import org.example.report.ClassDepsReport;
+import org.example.report.PackageDepsReport;
+import org.example.report.ProjectDepsReport;
+import org.example.visitor.DependencyRef;
+import org.example.visitor.TreeBuilder;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,9 +33,9 @@ public final class DependencyAnalyserLib {
             var tree = new TreeBuilder.TreeGraph();
 
             if(path.contains(JAVA_EXTENSION)){
-                var importRefs = new ArrayList<ImportRef>();
-                new ImportVisitor().visit(StaticJavaParser.parse(file.toString()), importRefs);
-                importRefs.stream().map(ImportRef::getPackageTreeOfImport).forEach(tree::addConnections);
+                var importRefs = new ArrayList<DependencyRef>();
+//                new ImportVisitor().visit(StaticJavaParser.parse(file.toString()), importRefs);
+//                importRefs.stream().map(DependencyRef::getPackageTreeOfImport).forEach(tree::addConnections);
             }
             else{
                 System.out.println("Filtered Through " + path);
@@ -56,9 +57,9 @@ public final class DependencyAnalyserLib {
             var tree = new TreeBuilder.TreeGraph();
 
             if(path.contains(JAVA_EXTENSION)){
-                var importRefs = new ArrayList<ImportRef>();
-                new ImportVisitor().visit(StaticJavaParser.parse(file.toString()), importRefs);
-                importRefs.stream().map(ImportRef::getPackageTreeOfImport).forEach(tree::addConnections);
+                var importRefs = new ArrayList<DependencyRef>();
+                //new ImportVisitor().visit(StaticJavaParser.parse(file.toString()), importRefs);
+                //importRefs.stream().map(DependencyRef::getPackageTreeOfImport).forEach(tree::addConnections);
             }
             else{
                 System.out.println("Filtered Through " + path);

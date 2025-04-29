@@ -1,8 +1,7 @@
 import com.github.javaparser.StaticJavaParser;
-import com.github.javaparser.utils.Pair;
-import org.example.ImportRef;
-import org.example.ImportVisitor;
-import org.example.TreeBuilder;
+import org.example.visitor.DependencyRef;
+import org.example.visitor.DependencyVisitor;
+import org.example.visitor.TreeBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +9,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -26,10 +24,10 @@ public class TreeGraphTest {
     void beforeEach() throws IOException {
         final Path reversePolishAnnotationPath = Paths.get("D:\\pcd\\DependencyAnalyzerLib\\src\\main\\resources\\withjavautil\\ReversePolishNotation.java");
         final File reversePolishAnnotationFile = reversePolishAnnotationPath.toFile();
-        ImportVisitor importVisitor = new ImportVisitor();
-        var imports = new ArrayList<ImportRef>();
-        importVisitor.visit(StaticJavaParser.parse(reversePolishAnnotationFile), imports);
-        this.importRefs = imports.stream().map(ImportRef::getPackageTreeOfImport).toList();
+        DependencyVisitor dependencyVisitor = new DependencyVisitor();
+        var dependencyRefs = new DependencyRef();
+        dependencyVisitor.visit(StaticJavaParser.parse(reversePolishAnnotationFile), dependencyRefs);
+        this.importRefs = dependencyRefs.getImportsTrees();
         this.tree = new TreeBuilder.TreeGraph();
     }
 

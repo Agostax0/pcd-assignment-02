@@ -1,18 +1,15 @@
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.utils.Pair;
-import org.example.ClassDepsReport;
-import org.example.ImportRef;
-import org.example.ImportVisitor;
-import org.example.TreeBuilder;
+import org.example.report.ClassDepsReport;
+import org.example.visitor.DependencyRef;
+import org.example.visitor.DependencyVisitor;
+import org.example.visitor.TreeBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -30,10 +27,10 @@ public class ClassDepsReportTest {
     private List<List<String>> importRefs;
 
     private void initRefs(Path path) throws FileNotFoundException {
-        ImportVisitor importVisitor = new ImportVisitor();
-        var imports = new ArrayList<ImportRef>();
-        importVisitor.visit(StaticJavaParser.parse(path.toFile()), imports);
-        this.importRefs = imports.stream().map(ImportRef::getPackageTreeOfImport).toList();
+        DependencyVisitor dependencyVisitor = new DependencyVisitor();
+        var dependencyRef = new DependencyRef();
+        dependencyVisitor.visit(StaticJavaParser.parse(path.toFile()), dependencyRef);
+        this.importRefs = dependencyRef.getImportsTrees();
     }
 
     @BeforeEach

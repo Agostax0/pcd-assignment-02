@@ -1,4 +1,4 @@
-package org.example;
+package org.example.visitor;
 
 import com.github.javaparser.utils.Pair;
 import java.util.*;
