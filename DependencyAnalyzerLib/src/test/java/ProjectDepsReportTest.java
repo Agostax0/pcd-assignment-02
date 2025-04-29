@@ -2,9 +2,9 @@ import com.github.javaparser.StaticJavaParser;
 import LIB.report.ProjectDepsReport;
 import shared.DependencyRef;
 import shared.DependencyVisitor;
-import shared.TreeBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import shared.TreeGraph;
 
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
@@ -22,7 +22,7 @@ public class ProjectDepsReportTest {
 
 
     private ProjectDepsReport projectDepsReport;
-    private TreeBuilder.TreeGraph tree;
+    private TreeGraph tree;
 
     private List<List<String>> importRefs;
 
@@ -47,7 +47,7 @@ public class ProjectDepsReportTest {
                 }
                 this.importRefs = dependencyRefs.getImportsTrees();
 
-                var fileTree = new TreeBuilder.TreeGraph();
+                var fileTree = new TreeGraph();
 
                 importRefs.forEach(fileTree::addConnections);
 
@@ -58,7 +58,7 @@ public class ProjectDepsReportTest {
 
     @BeforeEach
     void beforeEach(){
-        this.tree = new TreeBuilder.TreeGraph();
+        this.tree = new TreeGraph();
         this.projectDepsReport = new ProjectDepsReport(this.tree);
     }
 

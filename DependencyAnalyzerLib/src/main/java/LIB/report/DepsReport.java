@@ -1,15 +1,15 @@
 package LIB.report;
 
-import shared.TreeBuilder;
+import shared.TreeGraph;
 
 public class DepsReport {
-    public TreeBuilder.TreeGraph treeGraph;
+    public TreeGraph treeGraph;
 
-    protected DepsReport(TreeBuilder.TreeGraph treeGraph){
+    protected DepsReport(TreeGraph treeGraph){
         this.treeGraph = treeGraph;
     }
 
-    public TreeBuilder.TreeGraph getGraph(){
+    public TreeGraph getGraph(){
         return treeGraph;
     }
 }

@@ -1,7 +1,6 @@
- org.javaparser.samples."ReversePolishNotation";
-                        ."BALLALAL";
- java.util.Stack;
- java.util.stream.Stream;
+package org.javaparser.samples;
+import java.util.Stack;
+import java.util.stream.Stream;
 
 /**
  * A Simple Reverse Polish Notation calculator with memory function.

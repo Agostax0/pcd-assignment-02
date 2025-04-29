@@ -1,6 +1,6 @@
 package LIB.report;
 
-import static shared.TreeBuilder.*;
+import shared.TreeGraph;
 
 public class ClassDepsReport extends DepsReport{
 

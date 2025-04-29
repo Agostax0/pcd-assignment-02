@@ -1,9 +1,9 @@
 package LIB.report;
 
-import shared.TreeBuilder;
+import shared.TreeGraph;
 
 public class ProjectDepsReport extends DepsReport{
-    public ProjectDepsReport(TreeBuilder.TreeGraph tree) {
+    public ProjectDepsReport(TreeGraph tree) {
         super(tree);
     }
 }

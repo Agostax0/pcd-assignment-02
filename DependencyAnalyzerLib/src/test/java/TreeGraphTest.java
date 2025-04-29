@@ -1,9 +1,9 @@
 import com.github.javaparser.StaticJavaParser;
 import shared.DependencyRef;
 import shared.DependencyVisitor;
-import shared.TreeBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import shared.TreeGraph;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class TreeGraphTest {
 
 
-    private TreeBuilder.TreeGraph tree;
+    private TreeGraph tree;
     private List<List<String>> importRefs;
     @BeforeEach
     void beforeEach() throws IOException {
@@ -28,7 +28,7 @@ public class TreeGraphTest {
         var dependencyRefs = new DependencyRef();
         dependencyVisitor.visit(StaticJavaParser.parse(reversePolishAnnotationFile), dependencyRefs);
         this.importRefs = dependencyRefs.getImportsTrees();
-        this.tree = new TreeBuilder.TreeGraph();
+        this.tree = new TreeGraph();
     }
 
     @Test

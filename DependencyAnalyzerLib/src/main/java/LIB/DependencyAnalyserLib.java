@@ -10,7 +10,7 @@ import LIB.report.PackageDepsReport;
 import LIB.report.ProjectDepsReport;
 import shared.DependencyRef;
 import shared.DependencyVisitor;
-import shared.TreeBuilder;
+import shared.TreeGraph;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public final class DependencyAnalyserLib {
             return fs.readFile(path);
         }).map(file ->
         {
-            var tree = new TreeBuilder.TreeGraph();
+            var tree = new TreeGraph();
 
             if(path.contains(JAVA_EXTENSION)){
                 var dependencyRef = new DependencyRef();
@@ -60,7 +60,7 @@ public final class DependencyAnalyserLib {
             return fs.readFile(path);
         }).map(file ->
         {
-            var tree = new TreeBuilder.TreeGraph();
+            var tree = new TreeGraph();
 
             if(path.contains(JAVA_EXTENSION)){
                 var importRefs = new ArrayList<DependencyRef>();
@@ -116,7 +116,7 @@ public final class DependencyAnalyserLib {
                     reports.add(classReports.resultAt(i));
                 }
 
-                TreeBuilder.TreeGraph treeGraph = new TreeBuilder.TreeGraph();
+                TreeGraph treeGraph = new TreeGraph();
                 PackageDepsReport packageDepsReport = new PackageDepsReport(treeGraph);
 
                 for (var report : reports) {
@@ -142,7 +142,7 @@ public final class DependencyAnalyserLib {
                     return fs.readDir(path);
                 })
                 .compose(elemPaths -> {
-                    List<Future<TreeBuilder.TreeGraph>> depsList = new ArrayList<>();
+                    List<Future<TreeGraph>> depsList = new ArrayList<>();
                     for (var elemPath : elemPaths) {
 
                         depsList.add(fs.lprops(elemPath).compose(elemProps -> {
@@ -155,14 +155,14 @@ public final class DependencyAnalyserLib {
                         }));
                     }
                     return Future.all(depsList).map(fileReps -> {
-                        List<TreeBuilder.TreeGraph> graphs = new ArrayList<>();
+                        List<TreeGraph> graphs = new ArrayList<>();
                         for (int i = 0; i < fileReps.size(); i++) {
                             if (fileReps.succeeded(i)) graphs.add(fileReps.resultAt(i));
                         }
                         return graphs;
                     });
                 }).map(graphs -> {
-                    ProjectDepsReport report = new ProjectDepsReport(new TreeBuilder.TreeGraph());
+                    ProjectDepsReport report = new ProjectDepsReport(new TreeGraph());
 
                     for (var graph : graphs) report.treeGraph.addTree(graph);
 
@@ -181,7 +181,7 @@ public final class DependencyAnalyserLib {
                     return fs.readDir(path);
                 })
                 .compose(elemPaths -> {
-                    List<Future<TreeBuilder.TreeGraph>> depsList = new ArrayList<>();
+                    List<Future<TreeGraph>> depsList = new ArrayList<>();
                     for (var elemPath : elemPaths) {
 
                         depsList.add(fs.lprops(elemPath).compose(elemProps -> {
@@ -194,14 +194,14 @@ public final class DependencyAnalyserLib {
                         }));
                     }
                     return Future.all(depsList).map(fileReps -> {
-                        List<TreeBuilder.TreeGraph> graphs = new ArrayList<>();
+                        List<TreeGraph> graphs = new ArrayList<>();
                         for (int i = 0; i < fileReps.size(); i++) {
                             if (fileReps.succeeded(i)) graphs.add(fileReps.resultAt(i));
                         }
                         return graphs;
                     });
                 }).map(graphs -> {
-                    ProjectDepsReport report = new ProjectDepsReport(new TreeBuilder.TreeGraph());
+                    ProjectDepsReport report = new ProjectDepsReport(new TreeGraph());
 
                     for (var graph : graphs) report.treeGraph.addTree(graph);
 
