@@ -13,10 +13,10 @@ public class VertexTest {
 
     private Vertx vertx = Vertx.vertx();
 
-    private Path srcPath = Paths.get("D:\\pcd\\DependencyAnalyzerLib\\src\\main\\resources\\");
-    private Path projPath = Paths.get("D:\\pcd\\DependencyAnalyzerLib\\");
-    private Path packagePath = Paths.get("D:\\pcd\\DependencyAnalyzerLib\\src\\main\\resources\\withoutjavautil");
-    private Path filePath = Paths.get("D:\\pcd\\DependencyAnalyzerLib\\src\\main\\resources\\withjavautil\\ReversePolishNotation.java");
+    private Path srcPath = Paths.get("src\\main\\resources\\");
+    private Path projPath = Paths.get("src\\");
+    private Path packagePath = Paths.get("src\\main\\resources\\withoutjavautil");
+    private Path filePath = Paths.get("src\\main\\resources\\withjavautil\\ReversePolishNotation.java");
 
 
     private FileSystem fs;

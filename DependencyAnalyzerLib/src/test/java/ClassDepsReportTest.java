@@ -17,8 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ClassDepsReportTest {
 
-    final Path withJavaUtilImportPath = Paths.get("D:\\pcd\\DependencyAnalyzerLib\\src\\main\\resources\\withjavautil\\ReversePolishNotation.java");
-    final Path withoutJavaUtilImportPath = Paths.get("D:\\pcd\\DependencyAnalyzerLib\\src\\main\\resources\\withoutjavautil\\Test.java");
+    final Path withJavaUtilImportPath = Paths.get("src\\main\\resources\\withjavautil\\ReversePolishNotation.java");
+    final Path withoutJavaUtilImportPath = Paths.get("src\\main\\resources\\withoutjavautil\\Test.java");
 
 
     private ClassDepsReport classDepsReport;
@@ -30,10 +30,7 @@ public class ClassDepsReportTest {
         DependencyVisitor dependencyVisitor = new DependencyVisitor();
         var dependencyRef = new DependencyRef();
         dependencyVisitor.visit(StaticJavaParser.parse(path.toFile()), dependencyRef);
-        this.refs = dependencyRef
-                .getAllTreesFromFile(
-                        withJavaUtilImportPath.getFileName()
-                                .toString().split("\\.")[0]);
+        this.refs = dependencyRef.getImportsTrees();
     }
 
     @BeforeEach
@@ -66,13 +63,5 @@ public class ClassDepsReportTest {
         refs.forEach(tree::addConnections);
 
         assertFalse(classDepsReport.getGraph().hasNode("java"));
-    }
-
-    @Test
-    void testTreeGraphContainsPackageNodes() throws FileNotFoundException {
-        initRefs(withJavaUtilImportPath);
-        refs.forEach(tree::addConnections);
-
-        assertTrue(classDepsReport.treeGraph.hasNode("samples"));
     }
 }

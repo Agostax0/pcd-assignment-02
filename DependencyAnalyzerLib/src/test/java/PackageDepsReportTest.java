@@ -17,8 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PackageDepsReportTest {
-    final Path withJavaUtilImportPath = Paths.get("D:\\pcd\\DependencyAnalyzerLib\\src\\main\\resources\\withjavautil\\");
-    final Path withoutJavaUtilImportPath = Paths.get("D:\\pcd\\DependencyAnalyzerLib\\src\\main\\resources\\withoutjavautil\\");
+    final Path withJavaUtilImportPath = Paths.get("src\\main\\resources\\withjavautil\\");
+    final Path withoutJavaUtilImportPath = Paths.get("src\\main\\resources\\withoutjavautil\\");
 
 
     private PackageDepsReport packageDepsReport;
