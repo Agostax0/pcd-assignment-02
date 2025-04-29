@@ -1,10 +1,10 @@
-package APP;
+package shared;
 
 import java.util.Objects;
 
 public class Pair<A, B> {
-    final A a;
-    final B b;
+    final public A a;
+    final public B b;
 
     public Pair(A a1, B b1){
         this.a = a1;

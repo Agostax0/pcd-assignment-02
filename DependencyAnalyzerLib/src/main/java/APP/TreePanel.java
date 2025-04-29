@@ -1,10 +1,10 @@
 package APP;
 
-import com.mxgraph.swing.mxGraphComponent;
-import com.mxgraph.view.mxGraph;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.PublishSubject;
-import org.example.TreeGraph.GraphNode;
+import shared.Pair;
+import shared.TreeGraph;
+import shared.TreeGraph.GraphNode;
 
 import javax.swing.*;
 import java.awt.*;

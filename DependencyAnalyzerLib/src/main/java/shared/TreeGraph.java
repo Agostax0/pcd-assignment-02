@@ -1,11 +1,11 @@
-package APP;
+package shared;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class TreeGraph{
-    Set<GraphNode> nodes = new HashSet<>();
-    Set<Pair<GraphNode,GraphNode>> arcs = new HashSet<>();
+    public Set<GraphNode> nodes = new HashSet<>();
+    public Set<Pair<GraphNode,GraphNode>> arcs = new HashSet<>();
 
     public TreeGraph(){}
 
@@ -61,8 +61,8 @@ public class TreeGraph{
         private final String nodeName;
         private final int nodeLevel;
 
-        int x;
-        int y;
+        public int x;
+        public int y;
 
         public GraphNode(final String nodeName, final int nodeLevel) {
             this.nodeLevel = nodeLevel;

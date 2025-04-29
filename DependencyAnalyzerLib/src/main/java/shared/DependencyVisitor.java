@@ -1,4 +1,4 @@
-package LIB.visitor;
+package shared;
 
 import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.PackageDeclaration;

@@ -1,6 +1,6 @@
 import com.github.javaparser.StaticJavaParser;
-import LIB.visitor.DependencyRef;
-import LIB.visitor.DependencyVisitor;
+import shared.DependencyRef;
+import shared.DependencyVisitor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

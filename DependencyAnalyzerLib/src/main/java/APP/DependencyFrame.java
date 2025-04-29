@@ -1,6 +1,9 @@
 package APP;
 
 import com.github.javaparser.StaticJavaParser;
+import shared.DependencyRef;
+import shared.DependencyVisitor;
+import shared.TreeGraph;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,14 +25,14 @@ public class DependencyFrame extends JFrame {
         this.setLayout(layout);
 
         List<List<String>> importRefs;
-        ImportVisitor importVisitor = new ImportVisitor();
-        var imports = new ArrayList<ImportRef>();
+        DependencyVisitor importVisitor = new DependencyVisitor();
+        var dependencyRef = new DependencyRef();
         try {
-            importVisitor.visit(StaticJavaParser.parse(withJavaUtilImportPath.toFile()), imports);
+            importVisitor.visit(StaticJavaParser.parse(withJavaUtilImportPath.toFile()), dependencyRef);
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-        importRefs = imports.stream().map(ImportRef::getPackageTreeOfImport).toList();
+        importRefs = dependencyRef.getImportsTrees();
         var tree = new TreeGraph();
         importRefs.forEach(tree::addConnections);
 

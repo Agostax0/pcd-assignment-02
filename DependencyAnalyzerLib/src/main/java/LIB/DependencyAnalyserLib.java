@@ -8,9 +8,9 @@ import javassist.NotFoundException;
 import LIB.report.ClassDepsReport;
 import LIB.report.PackageDepsReport;
 import LIB.report.ProjectDepsReport;
-import LIB.visitor.DependencyRef;
-import LIB.visitor.DependencyVisitor;
-import LIB.visitor.TreeBuilder;
+import shared.DependencyRef;
+import shared.DependencyVisitor;
+import shared.TreeBuilder;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
