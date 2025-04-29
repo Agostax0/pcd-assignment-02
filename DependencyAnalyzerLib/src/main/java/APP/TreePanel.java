@@ -77,8 +77,14 @@ TreePanel extends JPanel {
         for(var arc: drawnGraph.arcs){
             g.setColor(Color.BLACK);
 
-            GraphNode a = arc.a;
-            GraphNode b = arc.b;
+            GraphNode a = arc.start;
+
+            if(a.x == 0 && a.y == 0){
+                final GraphNode tempA = a;
+                a = drawnGraph.nodes.stream().filter(it -> it.equals(tempA) && it.x != 0 && it.y != 0).findFirst().get();
+            }
+
+            GraphNode b = arc.end;
 
             if(a.isPackageNode || b.isPackageNode)
                 g.setColor(Color.GREEN);
@@ -103,9 +109,9 @@ TreePanel extends JPanel {
         int numRows = 0;
         if (!drawnGraph.arcs.isEmpty()) {
             numRows = drawnGraph.arcs.stream()
-                    .map(it -> it.b)
+                    .map(it -> it.end)
                     .map(graphNode -> new Pair<>(graphNode, drawnGraph.arcs.stream()
-                            .filter(node -> node.b.getNodeLevel() == graphNode.getNodeLevel())
+                            .filter(node -> node.end.getNodeLevel() == graphNode.getNodeLevel())
                             .count()))
                     .max((a, b) -> Math.toIntExact(a.b - b.b)).get().b.intValue();
 
@@ -141,8 +147,8 @@ TreePanel extends JPanel {
                 if(orderedTree.containsKey(i+1)){
                     var childNodes = orderedTree.get(i+1);
                     childNodes.addAll((drawnGraph.arcs.stream()
-                            .filter(it -> it.a.equals(currentLevelNode))
-                            .map(it -> it.b)
+                            .filter(it -> it.start.equals(currentLevelNode))
+                            .map(it -> it.end)
                             .filter(it -> !childNodes.contains(it)).toList()));
                 }
 

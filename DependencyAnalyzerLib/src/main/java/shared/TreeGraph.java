@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 public class TreeGraph {
     public Set<GraphNode> nodes = new HashSet<>();
-    public Set<Pair<GraphNode,GraphNode>> arcs = new HashSet<>();
+    public Set<GraphArc> arcs = new HashSet<>();
 
     public TreeGraph() {
     }
@@ -18,19 +18,19 @@ public class TreeGraph {
         }
 
         for (int i = 0; i < path.size() - 1; i++) {
-            var start = graphNodes.get(i);
-            var end = graphNodes.get(i + 1);
+            var graphNodeStartCopy = graphNodes.get(i);
+            var graphNodeEndCopy = graphNodes.get(i + 1);
 
-            GraphNode finalStart = start;
-            if (arcs.stream().map(it -> it.a).anyMatch(it -> it.equals(finalStart)))
-                start = arcs.stream().map(it -> it.a).filter(it -> it.equals(finalStart)).findFirst().orElse(start);
 
-            GraphNode finalEnd = end;
-            if (arcs.stream().map(it -> it.b).anyMatch(it -> it.equals(finalEnd))) {
-                end = arcs.stream().map(it -> it.b).filter(it -> it.equals(finalEnd)).findFirst().orElse(end);
-            }
+            Optional<GraphNode> graphNodeStartFind= this.nodes.stream().filter(it -> it.equals(graphNodeStartCopy)).findFirst();
+            var graphNodeStart = graphNodeStartFind.orElse(graphNodeStartCopy);
 
-            arcs.add(new Pair<>(start, end));
+            Optional<GraphNode> graphNodeEndFind = this.nodes.stream().filter(it -> it.equals(graphNodeEndCopy)).findFirst();
+            var graphNodeEnd = graphNodeEndFind.orElse(graphNodeEndCopy);
+
+            var newArc = new GraphArc(graphNodeStart, graphNodeEnd);
+
+            this.arcs.add(newArc);
         }
 
         nodes.addAll(graphNodes);
@@ -38,9 +38,9 @@ public class TreeGraph {
 
     public void addFromRef(DependencyRef dependencyRef, final String fileName) {
         Set<GraphNode> importLeafNodes = new HashSet<>();
-
         List<List<String>> importsTrees = dependencyRef.getImportsTrees();
-        for (var importTree : importsTrees) { // [[java,util,List],[java.io.File]]
+        for (var importTree : importsTrees) { // [[java,util,List],[java.io.File]];
+
             List<GraphNode> graphNodes = new ArrayList<>();
             for (int i = 0; i < importTree.size(); i++) { // [java,util,List]
                 boolean isLeaf = i == importTree.size() - 1;
@@ -51,43 +51,31 @@ public class TreeGraph {
                         isLeaf,
                         false
                 );
-                if(isLeaf) {
+                if(isLeaf)
                     importLeafNodes.add(newNode);
-                }
                 graphNodes.add(newNode);
-                if(this.nodes.stream().noneMatch(it -> it.equals(newNode))) this.nodes.add(newNode);
             }
 
-            for (int i = 0; i < graphNodes.size() - 1; i++) {
-                var start = graphNodes.get(i);
-                var end = graphNodes.get(i + 1);
+            this.nodes.addAll(graphNodes);
 
-                GraphNode finalStart = start;
-                if (arcs.stream().map(it -> it.a).anyMatch(it -> it.equals(finalStart)))
-                    start = arcs.stream().map(it -> it.a).filter(it -> it.equals(finalStart)).findFirst().orElse(start);
+            for(int i = 0; i < importTree.size() - 1; i++){
+                var graphNodeStartCopy = graphNodes.get(i);
+                var graphNodeEndCopy = graphNodes.get(i + 1);
 
-                GraphNode finalEnd = end;
-                if (arcs.stream().map(it -> it.b).anyMatch(it -> it.equals(finalEnd))) {
-                    end = arcs.stream().map(it -> it.b).filter(it -> it.equals(finalEnd)).findFirst().orElse(end);
-                }
 
-                arcs.add(new Pair<>(start, end));
+                Optional<GraphNode> graphNodeStartFind= this.nodes.stream().filter(it -> it.equals(graphNodeStartCopy)).findFirst();
+                var graphNodeStart = graphNodeStartFind.orElse(graphNodeStartCopy);
+
+                Optional<GraphNode> graphNodeEndFind = this.nodes.stream().filter(it -> it.equals(graphNodeEndCopy)).findFirst();
+                var graphNodeEnd = graphNodeEndFind.orElse(graphNodeEndCopy);
+
+                var newArc = new GraphArc(graphNodeStart, graphNodeEnd);
+
+                this.arcs.add(newArc);
             }
-
-/*
-            Set<GraphNode> distinctNodes = new HashSet<>();
-            for(var graphNode: this.nodes) if(graphNodes.stream().distinct().anyMatch(it-> it.equals(graphNode))) distinctNodes.add(graphNode);
-
-            var fatherFulNodes = distinctNodes.stream().filter(graphNode -> graphNode.fatherNode != null).collect(Collectors.toSet());
-            for(var graphNode: fatherFulNodes){
-                Pair<GraphNode, GraphNode> newArc = new Pair<>(graphNode.fatherNode, graphNode);
-
-                if(this.arcs.stream().noneMatch(it-> it.a.equals(newArc.a) && it.b.equals(newArc.b))) this.arcs.add(newArc);
-            }
-
-*/
-
         }
+
+
 
 /*
         var packageTree = dependencyRef.getPackageTree();
@@ -126,7 +114,7 @@ public class TreeGraph {
     }
 
     public Set<Pair<String, String>> getArcs() {
-        return this.arcs.stream().map(it -> new Pair<>(it.a.nodeName, it.b.nodeName)).collect(Collectors.toSet());
+        return this.arcs.stream().map(it -> new Pair<>(it.start.nodeName, it.end.nodeName)).collect(Collectors.toSet());
     }
 
     public Set<String> getNodes() {
@@ -135,7 +123,7 @@ public class TreeGraph {
 
 
     public boolean hasArc(Pair<String, String> arc) {
-        return this.arcs.stream().map(it -> new Pair<>(it.a.nodeName, it.b.nodeName)).anyMatch(e -> e.equals(arc));
+        return this.arcs.stream().anyMatch(e -> e.start.nodeName.equals(arc.a) && e.end.nodeName.equals(arc.b));
     }
 
     public static class GraphNode {
@@ -160,7 +148,8 @@ public class TreeGraph {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             GraphNode graphNode = (GraphNode) o;
-            return Objects.equals(this.nodeLevel, graphNode.nodeLevel)
+            return
+                    Objects.equals(this.nodeLevel, graphNode.nodeLevel)
                     && this.nodeName.equals(graphNode.nodeName);
         }
 
@@ -204,12 +193,20 @@ public class TreeGraph {
         public boolean equals(Object o) {
             if (o == null || getClass() != o.getClass()) return false;
             GraphArc graphArc = (GraphArc) o;
-            return start.equals(graphArc.start) && end.equals(graphArc.end);
+            return this==o || start.equals(graphArc.start) && end.equals(graphArc.end);
         }
 
         @Override
         public int hashCode() {
             return Objects.hash(start, end);
+        }
+
+        @Override
+        public String toString() {
+            return "GraphArc{" +
+                    "start=" + start +
+                    ", end=" + end +
+                    '}';
         }
     }
 }
