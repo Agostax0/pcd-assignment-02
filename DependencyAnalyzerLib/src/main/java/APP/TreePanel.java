@@ -1,4 +1,4 @@
-package org.example;
+package APP;
 
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxGraph;

@@ -1,4 +1,4 @@
-package org.example;
+package APP;
 
 import java.util.*;
 import java.util.stream.Collectors;

@@ -23,7 +23,6 @@ public class DependencyRef {
         var packages = getPackageTree();
         packages.addLast(fileName);
 
-        imports.forEach(import -> );
 
         return res;
     }
