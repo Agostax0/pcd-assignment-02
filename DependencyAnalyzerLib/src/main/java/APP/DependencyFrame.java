@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DependencyFrame extends JFrame {
-    final Path withJavaUtilImportPath = Paths.get("src\\main\\java\\APP\\Main.java");
+    final Path withJavaUtilImportPath = Paths.get("src\\main\\resources\\withjavautil\\ReversePolishNotation.java");
 
     public DependencyFrame() {
         this.setSize(800, 600);
@@ -24,7 +24,6 @@ public class DependencyFrame extends JFrame {
         LayoutManager layout = new BorderLayout();
         this.setLayout(layout);
 
-        List<List<String>> importRefs;
         DependencyVisitor importVisitor = new DependencyVisitor();
         var dependencyRef = new DependencyRef();
         try {
@@ -32,9 +31,12 @@ public class DependencyFrame extends JFrame {
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-        importRefs = dependencyRef.getImportsTrees();
+
+        System.out.println(dependencyRef.getPackageTree());
+
         var tree = new TreeGraph();
-        importRefs.forEach(tree::addConnections);
+
+        dependencyRef.getImportsTrees().forEach(tree::addConnections);
 
 
         TreePanel treePanel = new TreePanel(tree);

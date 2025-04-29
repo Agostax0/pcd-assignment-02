@@ -55,20 +55,29 @@ TreePanel extends JPanel {
 
         computeNodesPositions();
 
-        g.setColor(Color.BLACK);
 
         for(var node : drawnGraph.nodes){
+            g.setColor(Color.BLACK);
             if(node.isLeaf)
                 g.setColor(Color.BLUE);
-            else
-                g.setColor(Color.BLACK);
+            if(node.isPackageNode)
+                g.setColor(Color.GREEN);
 
             g.fillOval(node.x, node.y, 5, 5);
             g.drawString(node.getNodeName(), node.x, node.y - 7);
         }
 
+
         for(var arc: drawnGraph.arcs){
-            g.drawLine(arc.a.x+2, arc.a.y+2, arc.b.x+2, arc.b.y+2);
+            g.setColor(Color.BLACK);
+
+            GraphNode a = arc.a;
+            GraphNode b = arc.b;
+
+            if(a.isPackageNode || b.isPackageNode)
+                g.setColor(Color.GREEN);
+
+            g.drawLine(a.x+2, a.y+2, b.x+2, b.y+2);
         }
     }
 
