@@ -15,18 +15,6 @@ public class DependencyRef {
 
     }
 
-    public List<List<String>> getAllTreesFromFile(String fileName){
-        var res = new ArrayList<List<String>>();
-
-        var imports = getImportsTrees();
-
-        var packages = getPackageTree();
-        packages.addLast(fileName);
-
-
-        return res;
-    }
-
 
     public List<List<String>> getImportsTrees(){
         var res = new ArrayList<List<String>>();
