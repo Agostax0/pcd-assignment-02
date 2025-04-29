@@ -1,22 +1,15 @@
 package APP;
 
 import LIB.DependencyAnalyserLib;
-import com.github.javaparser.StaticJavaParser;
-import shared.DependencyRef;
-import shared.DependencyVisitor;
-import shared.TreeGraph;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 public class DependencyFrame extends JFrame {
-    final Path withJavaUtilImportPath = Paths.get("src\\main\\resources\\withjavautil\\ReversePolishNotation.java");
-    final Path projectPath = Paths.get("src\\main\\");
+    final Path filePath = Paths.get("src\\main\\resources\\withjavautil\\ReversePolishNotation.java");
+    final Path projectPath = Paths.get("src\\");
 
     public DependencyFrame() {
         this.setSize(800, 600);
