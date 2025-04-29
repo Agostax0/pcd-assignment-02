@@ -1,5 +1,5 @@
 import javassist.NotFoundException;
-import org.example.DependencyAnalyserLib;
+import LIB.DependencyAnalyserLib;
 import org.junit.jupiter.api.Test;
 
 

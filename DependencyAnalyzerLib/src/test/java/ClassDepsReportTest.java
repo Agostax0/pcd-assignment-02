@@ -1,9 +1,9 @@
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.utils.Pair;
-import org.example.report.ClassDepsReport;
-import org.example.visitor.DependencyRef;
-import org.example.visitor.DependencyVisitor;
-import org.example.visitor.TreeBuilder;
+import LIB.report.ClassDepsReport;
+import LIB.visitor.DependencyRef;
+import LIB.visitor.DependencyVisitor;
+import LIB.visitor.TreeBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,13 +24,16 @@ public class ClassDepsReportTest {
     private ClassDepsReport classDepsReport;
     private TreeBuilder.TreeGraph tree;
 
-    private List<List<String>> importRefs;
+    private List<List<String>> refs;
 
     private void initRefs(Path path) throws FileNotFoundException {
         DependencyVisitor dependencyVisitor = new DependencyVisitor();
         var dependencyRef = new DependencyRef();
         dependencyVisitor.visit(StaticJavaParser.parse(path.toFile()), dependencyRef);
-        this.importRefs = dependencyRef.getImportsTrees();
+        this.refs = dependencyRef
+                .getAllTreesFromFile(
+                        withJavaUtilImportPath.getFileName()
+                                .toString().split("\\.")[0]);
     }
 
     @BeforeEach
@@ -44,7 +47,7 @@ public class ClassDepsReportTest {
     @Test
     void testTreeGraphContainsNodeJava() throws FileNotFoundException {
         initRefs(withJavaUtilImportPath);
-        importRefs.forEach(tree::addConnections);
+        refs.forEach(tree::addConnections);
 
         assertTrue(classDepsReport.getGraph().hasNode("java"));
     }
@@ -52,7 +55,7 @@ public class ClassDepsReportTest {
     @Test
     void testTreeGraphContainsArcJavaUtil() throws FileNotFoundException {
         initRefs(withJavaUtilImportPath);
-        importRefs.forEach(tree::addConnections);
+        refs.forEach(tree::addConnections);
 
         assertTrue(classDepsReport.getGraph().hasArc(new Pair<>("java","util")));
     }
@@ -60,9 +63,16 @@ public class ClassDepsReportTest {
     @Test
     void testTreeGraphDoesNotContainsNodeJava() throws FileNotFoundException {
         initRefs(withoutJavaUtilImportPath);
-        importRefs.forEach(tree::addConnections);
+        refs.forEach(tree::addConnections);
 
         assertFalse(classDepsReport.getGraph().hasNode("java"));
+    }
 
+    @Test
+    void testTreeGraphContainsPackageNodes() throws FileNotFoundException {
+        initRefs(withJavaUtilImportPath);
+        refs.forEach(tree::addConnections);
+
+        assertTrue(classDepsReport.treeGraph.get);
     }
 }

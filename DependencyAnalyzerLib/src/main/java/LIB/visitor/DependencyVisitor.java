@@ -1,4 +1,4 @@
-package org.example.visitor;
+package LIB.visitor;
 
 import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.PackageDeclaration;

@@ -1,15 +1,18 @@
-package org.example;
+package LIB;
 
+import com.github.javaparser.StaticJavaParser;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.file.FileSystem;
 import javassist.NotFoundException;
-import org.example.report.ClassDepsReport;
-import org.example.report.PackageDepsReport;
-import org.example.report.ProjectDepsReport;
-import org.example.visitor.DependencyRef;
-import org.example.visitor.TreeBuilder;
+import LIB.report.ClassDepsReport;
+import LIB.report.PackageDepsReport;
+import LIB.report.ProjectDepsReport;
+import LIB.visitor.DependencyRef;
+import LIB.visitor.DependencyVisitor;
+import LIB.visitor.TreeBuilder;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,9 +36,12 @@ public final class DependencyAnalyserLib {
             var tree = new TreeBuilder.TreeGraph();
 
             if(path.contains(JAVA_EXTENSION)){
-                var importRefs = new ArrayList<DependencyRef>();
-//                new ImportVisitor().visit(StaticJavaParser.parse(file.toString()), importRefs);
-//                importRefs.stream().map(DependencyRef::getPackageTreeOfImport).forEach(tree::addConnections);
+                var dependencyRef = new DependencyRef();
+                new DependencyVisitor().visit(StaticJavaParser.parse(file.toString()), dependencyRef);
+                dependencyRef.getAllTreesFromFile(
+                        Path.of(path).getFileName().toString().split("\\.")[0])
+                        .forEach(tree::addConnections);
+
             }
             else{
                 System.out.println("Filtered Through " + path);

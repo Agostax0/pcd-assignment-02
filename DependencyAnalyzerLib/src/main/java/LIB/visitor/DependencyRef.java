@@ -1,4 +1,4 @@
-package org.example.visitor;
+package LIB.visitor;
 
 import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.PackageDeclaration;
@@ -15,6 +15,18 @@ public class DependencyRef {
 
     }
 
+    public List<List<String>> getAllTreesFromFile(String fileName){
+        var res = new ArrayList<List<String>>();
+
+        var imports = getImportsTrees();
+
+        var packages = getPackageTree();
+        packages.addLast(fileName);
+
+        imports.forEach(import -> );
+
+        return res;
+    }
 
 
     public List<List<String>> getImportsTrees(){

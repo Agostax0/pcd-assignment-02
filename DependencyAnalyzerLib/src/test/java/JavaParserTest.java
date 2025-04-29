@@ -1,6 +1,6 @@
 import com.github.javaparser.StaticJavaParser;
-import org.example.visitor.DependencyRef;
-import org.example.visitor.DependencyVisitor;
+import LIB.visitor.DependencyRef;
+import LIB.visitor.DependencyVisitor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -42,6 +42,8 @@ public class JavaParserTest {
     void testReversePolishAnnotationPackageIsNotEmpty() throws FileNotFoundException{
         var dependencyRef = new DependencyRef();
         dependencyVisitor.visit(StaticJavaParser.parse(reversePolishAnnotationFile), dependencyRef);
+        System.out.println(reversePolishAnnotationPath.getFileName().toString());
+
         assertFalse(dependencyRef.getPackageTree().isEmpty());
     }
 

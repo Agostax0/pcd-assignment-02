@@ -1,6 +1,6 @@
-package org.example.report;
+package LIB.report;
 
-import org.example.visitor.TreeBuilder;
+import LIB.visitor.TreeBuilder;
 
 public class ProjectDepsReport extends DepsReport{
     public ProjectDepsReport(TreeBuilder.TreeGraph tree) {
