@@ -3,7 +3,7 @@ package org.example.report;
 import org.example.visitor.TreeBuilder;
 
 public class DepsReport {
-    protected TreeBuilder.TreeGraph treeGraph;
+    public TreeBuilder.TreeGraph treeGraph;
 
     protected DepsReport(TreeBuilder.TreeGraph treeGraph){
         this.treeGraph = treeGraph;

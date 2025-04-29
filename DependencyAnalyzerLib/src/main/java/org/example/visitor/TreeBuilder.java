@@ -5,65 +5,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class TreeBuilder {
-    public static class TreeNode {
-        String name;
-        Map<String, TreeNode> leaves = new HashMap<>();
-
-        public TreeNode(String name){
-            this.name = name;
-        }
-
-        public void addChildren(final List<String> children){
-            if(!children.isEmpty()){
-                String head = children.getFirst();
-
-                TreeNode child = this.leaves.computeIfAbsent(head, TreeNode::new);
-                child.addChildren(children.subList(1,children.size()));
-            }
-        }
-
-        public Map<String, TreeNode> getLeaves(){
-            return this.leaves;
-        }
-
-        public boolean isChildrenPresent(final String children){
-            return Objects.equals(name, children) || isChildrenInLeaves(children, this.leaves.values());
-        }
-
-        private boolean isChildrenInLeaves(String children, Collection<TreeNode> leaves){
-            if(leaves == null){
-                return false;
-            }
-
-            if(leaves.stream().map(leaf -> leaf.name).anyMatch(leafName -> Objects.equals(leafName, children))) {
-                return true;
-            }
-
-            if(leaves.isEmpty()){
-                return false;
-            }
-
-            return isChildrenInLeaves(children, leaves.stream().flatMap(leaf -> leaf.leaves.values().stream()).toList());
-        }
-
-        @Override
-        public String toString() {
-            return toStringHelper(0);
-        }
-
-        private String toStringHelper(int indentLevel) {
-            StringBuilder sb = new StringBuilder();
-            String indent = "\t".repeat(indentLevel);
-            sb.append(indent).append(name).append("\n");
-
-            for (TreeNode child : leaves.values()) {
-                sb.append(child.toStringHelper(indentLevel + 1));
-            }
-
-            return sb.toString();
-        }
-    }
-
     public static class TreeGraph{
         final Set<GraphNode> nodes = new HashSet<>();
         final Set<Pair<GraphNode,GraphNode>> arcs = new HashSet<>();
@@ -71,14 +12,29 @@ public class TreeBuilder {
         public TreeGraph(){}
 
         public void addConnections(final List<String> path){
+            List<GraphNode> graphNodes = new ArrayList<>();
+
             for(int i = 0; i < path.size(); i++){
-                nodes.add(new GraphNode(path.get(i), i));
+                graphNodes.add(new GraphNode(path.get(i), i));
             }
 
             for(int i = 0; i < path.size() - 1; i++){
-                arcs.add(new Pair<>(new GraphNode(path.get(i), i), new GraphNode(path.get(i + 1), i + 1)));
+                var start = graphNodes.get(i);
+                var end = graphNodes.get(i + 1);
+
+                GraphNode finalStart = start;
+                if(arcs.stream().map(it -> it.a).anyMatch(it -> it.equals(finalStart)))
+                    start = arcs.stream().map(it -> it.a).filter(it -> it.equals(finalStart)).findFirst().orElse(start);
+
+                GraphNode finalEnd = end;
+                if(arcs.stream().map(it -> it.b).anyMatch(it -> it.equals(finalEnd))) {
+                    end = arcs.stream().map(it -> it.b).filter(it -> it.equals(finalEnd)).findFirst().orElse(end);
+                }
+
+                arcs.add(new Pair<>(start, end));
             }
 
+            nodes.addAll(graphNodes);
         }
 
         public void addTree(final TreeGraph newTree){
