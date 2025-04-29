@@ -21,9 +21,8 @@ public final class DependencyAnalyserLib {
     private DependencyAnalyserLib() {
     }
 
-    public static Future<ClassDepsReport> getClassDependencies(final String path) {
-        Vertx vertx = Vertx.vertx();
-        FileSystem fs = vertx.fileSystem();
+    public static Future<ClassDepsReport> getClassDependencies(final String path, final FileSystem contextFs) {
+        FileSystem fs = (contextFs == null) ? Vertx.vertx().fileSystem() : contextFs;
 
         return fs.exists(path).compose(doesExist -> {
             if (!doesExist) return Future.failedFuture(new NotFoundException(""));
@@ -38,34 +37,8 @@ public final class DependencyAnalyserLib {
             if(path.contains(JAVA_EXTENSION)){
                 var dependencyRef = new DependencyRef();
                 new DependencyVisitor().visit(StaticJavaParser.parse(file.toString()), dependencyRef);
-                dependencyRef.getAllTreesFromFile(
-                        Path.of(path).getFileName().toString().split("\\.")[0])
+                dependencyRef.getImportsTrees()
                         .forEach(tree::addConnections);
-
-            }
-            else{
-                System.out.println("Filtered Through " + path);
-            }
-
-            return new ClassDepsReport(tree);
-        });
-    }
-
-    private static Future<ClassDepsReport> getClassDependencies(final String path, final FileSystem fs){
-        return fs.exists(path).compose(doesExist -> {
-            if (!doesExist) return Future.failedFuture(new NotFoundException(""));
-            return fs.lprops(path);
-        }).compose(fileProps -> {
-            if (fileProps.isDirectory()) return Future.failedFuture(new IllegalArgumentException(""));
-            return fs.readFile(path);
-        }).map(file ->
-        {
-            var tree = new TreeGraph();
-
-            if(path.contains(JAVA_EXTENSION)){
-                var importRefs = new ArrayList<DependencyRef>();
-                //new ImportVisitor().visit(StaticJavaParser.parse(file.toString()), importRefs);
-                //importRefs.stream().map(DependencyRef::getPackageTreeOfImport).forEach(tree::addConnections);
             }
             else{
                 System.out.println("Filtered Through " + path);
@@ -128,9 +101,8 @@ public final class DependencyAnalyserLib {
         });
     }
 
-    public static Future<ProjectDepsReport> getProjectDependencies(final String path) {
-        Vertx vertx = Vertx.vertx();
-        FileSystem fs = vertx.fileSystem();
+    public static Future<ProjectDepsReport> getProjectDependencies(final String path, final FileSystem contextFs) {
+        FileSystem fs = (contextFs == null) ? Vertx.vertx().fileSystem() : contextFs;
 
         return fs.exists(path)
                 .compose(doesExist -> { //mi accerto che il path esista
@@ -169,44 +141,4 @@ public final class DependencyAnalyserLib {
                     return report;
                 });
     }
-
-    private static Future<ProjectDepsReport> getProjectDependencies(final String path, final FileSystem fs) {
-        return fs.exists(path)
-                .compose(doesExist -> { //mi accerto che il path esista
-                    if (doesExist) return fs.lprops(path);
-                    else return Future.failedFuture(path + "does not exist");
-                })
-                .compose(pathProps -> {
-                    if (!pathProps.isDirectory()) Future.failedFuture(path + " is Not Directory");
-                    return fs.readDir(path);
-                })
-                .compose(elemPaths -> {
-                    List<Future<TreeGraph>> depsList = new ArrayList<>();
-                    for (var elemPath : elemPaths) {
-
-                        depsList.add(fs.lprops(elemPath).compose(elemProps -> {
-                            if (!elemProps.isDirectory()){
-                                return getClassDependencies(elemPath,fs).map(rep -> rep.treeGraph);
-                            }
-                            else {
-                                return getProjectDependencies(elemPath,fs).map(rep -> rep.treeGraph);
-                            }
-                        }));
-                    }
-                    return Future.all(depsList).map(fileReps -> {
-                        List<TreeGraph> graphs = new ArrayList<>();
-                        for (int i = 0; i < fileReps.size(); i++) {
-                            if (fileReps.succeeded(i)) graphs.add(fileReps.resultAt(i));
-                        }
-                        return graphs;
-                    });
-                }).map(graphs -> {
-                    ProjectDepsReport report = new ProjectDepsReport(new TreeGraph());
-
-                    for (var graph : graphs) report.treeGraph.addTree(graph);
-
-                    return report;
-                });
-    }
-
 }
