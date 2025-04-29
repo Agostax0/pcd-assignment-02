@@ -9,7 +9,7 @@ import java.nio.file.Paths;
 
 public class DependencyFrame extends JFrame {
     final Path filePath = Paths.get("src\\main\\resources\\withjavautil\\ReversePolishNotation.java");
-    final Path projectPath = Paths.get("src\\");
+    final Path projectPath = Paths.get("C:\\Users\\agost\\IdeaProjects\\pcd-assignment-02\\DependencyAnalyzerLib\\src\\main\\resources\\");
 
     public DependencyFrame() {
         this.setSize(800, 600);
@@ -18,35 +18,11 @@ public class DependencyFrame extends JFrame {
 
         LayoutManager layout = new BorderLayout();
         this.setLayout(layout);
-//
-//        DependencyVisitor importVisitor = new DependencyVisitor();
-//        var dependencyRef = new DependencyRef();
-//        try {
-//            importVisitor.visit(StaticJavaParser.parse(withJavaUtilImportPath.toFile()), dependencyRef);
-//        } catch (FileNotFoundException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//        System.out.println(dependencyRef.getPackageTree());
-//
-//        var tree = new TreeGraph();
-//
-//        dependencyRef.getImportsTrees().forEach(tree::addConnections);
-//
-//
-//        TreePanel treePanel = new TreePanel(tree);
-//
-//        this.add(BorderLayout.CENTER, treePanel);
-//
-//        this.setVisible(true);
 
-        DependencyAnalyserLib.getProjectDependencies(projectPath.toAbsolutePath().toString(), null).onComplete(res->{
-            TreePanel treePanel = new TreePanel(res.result().getGraph());
+        TreePanel treePanel = new TreePanel(ReactiveDependencyLib.generateGraphStream(projectPath));
 
-            this.add(BorderLayout.CENTER, treePanel);
+        this.add(BorderLayout.CENTER, treePanel);
 
-            this.setVisible(true);
-
-        }).onFailure(Throwable::printStackTrace);
+        this.setVisible(true);
     }
 }

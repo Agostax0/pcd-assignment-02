@@ -1,5 +1,6 @@
 package APP;
 
+import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.PublishSubject;
 import shared.Pair;
@@ -15,28 +16,18 @@ import java.util.stream.Collectors;
 public class
 TreePanel extends JPanel {
 
-    PublishSubject<TreeGraph> stream;
     private TreeGraph drawnGraph = new TreeGraph();
 
-    public TreePanel(PublishSubject<TreeGraph> graphStream) {
-        this.stream = graphStream;
+    public TreePanel(Flowable<TreeGraph> graphStream) {
 
-        stream
+        graphStream
                 .observeOn(Schedulers.computation())
-                .map(graph -> {
-
-                    var notDrawnNodes = graph.nodes.stream().filter(node -> !drawnGraph.nodes.contains(node)).collect(Collectors.toSet());
-                    var notDrawnArcs = graph.arcs.stream().filter(arc -> !drawnGraph.arcs.contains(arc)).collect(Collectors.toSet());
-
-                    var formattedGraph = new TreeGraph();
-
-                    formattedGraph.nodes = notDrawnNodes;
-                    formattedGraph.arcs = notDrawnArcs;
-
-                    return formattedGraph;
-                })
                 .subscribe(graph -> {
-                    drawnGraph.addTree(graph);
+                    System.out.println("received graph");
+                    SwingUtilities.invokeLater(()->{
+                        drawnGraph.addTree(graph);
+                        this.repaint();
+                    });
                 });
 
 
@@ -50,6 +41,7 @@ TreePanel extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
+        System.out.println("paint " + drawnGraph.nodes);
         super.paintComponent(g);
         setBackground(Color.WHITE);
 
@@ -167,9 +159,5 @@ TreePanel extends JPanel {
             }
         }
 
-        //System.out.println(orderedTree);
-
-        System.out.println(drawnGraph.nodes);
-        System.out.println(drawnGraph.arcs);
     }
 }
