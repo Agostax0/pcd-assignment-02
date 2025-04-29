@@ -56,12 +56,18 @@ TreePanel extends JPanel {
         computeNodesPositions();
 
 
+        var offsetX = 50;
+        var offsetY = 50;
+
         for(var node : drawnGraph.nodes){
             g.setColor(Color.BLACK);
             if(node.isLeaf)
                 g.setColor(Color.BLUE);
             if(node.isPackageNode)
                 g.setColor(Color.GREEN);
+
+            node.x += offsetX;
+            node.y += offsetY;
 
             g.fillOval(node.x, node.y, 5, 5);
             g.drawString(node.getNodeName(), node.x, node.y - 7);
@@ -107,8 +113,8 @@ TreePanel extends JPanel {
         }
 
 
-        int verticalOffsetBetweenNodes = nodeRowSize / 2;
-        int horizontalOffsetBetweenNodes = nodeColumnSize / 2;
+        int verticalOffsetBetweenNodes = (10) + nodeRowSize / 2;
+        int horizontalOffsetBetweenNodes = (20) + nodeColumnSize / 2;
         int numLevels = numCols;
 
         Map<Integer, List<GraphNode>> orderedTree = new HashMap<>();
@@ -134,10 +140,10 @@ TreePanel extends JPanel {
             for(var currentLevelNode : currentLevelNodes){ //adding each node's children in order
                 if(orderedTree.containsKey(i+1)){
                     var childNodes = orderedTree.get(i+1);
-                    (drawnGraph.arcs.stream()
+                    childNodes.addAll((drawnGraph.arcs.stream()
                             .filter(it -> it.a.equals(currentLevelNode))
-                            .map(it-> it.b)
-                            .filter(it -> !childNodes.contains(it)).toList()).forEach(childNodes::add);
+                            .map(it -> it.b)
+                            .filter(it -> !childNodes.contains(it)).toList()));
                 }
 
             }
@@ -155,7 +161,9 @@ TreePanel extends JPanel {
             }
         }
 
-        System.out.println(orderedTree);
+        //System.out.println(orderedTree);
 
+        System.out.println(drawnGraph.nodes);
+        System.out.println(drawnGraph.arcs);
     }
 }

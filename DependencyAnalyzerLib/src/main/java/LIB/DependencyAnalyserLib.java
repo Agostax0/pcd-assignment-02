@@ -37,11 +37,10 @@ public final class DependencyAnalyserLib {
             if(path.contains(JAVA_EXTENSION)){
                 var dependencyRef = new DependencyRef();
                 new DependencyVisitor().visit(StaticJavaParser.parse(file.toString()), dependencyRef);
-                dependencyRef.getImportsTrees()
-                        .forEach(tree::addConnections);
+                tree.addFromRef(dependencyRef, path);
             }
             else{
-                System.out.println("Filtered Through " + path);
+                //System.out.println("Filtered Through " + path);
             }
 
             return new ClassDepsReport(tree);

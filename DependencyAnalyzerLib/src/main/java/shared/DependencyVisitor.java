@@ -8,7 +8,9 @@ public class DependencyVisitor extends VoidVisitorAdapter<DependencyRef> {
     @Override
     public void visit(ImportDeclaration importDeclaration, DependencyRef arg){
         super.visit(importDeclaration, arg);
-        arg.importDeclarations.add(importDeclaration);
+        if(!importDeclaration.isAsterisk()){
+            arg.importDeclarations.add(importDeclaration);
+        }
     }
 
     @Override
