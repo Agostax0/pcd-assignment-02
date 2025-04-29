@@ -12,7 +12,8 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TreePanel extends JPanel {
+public class
+TreePanel extends JPanel {
 
     PublishSubject<TreeGraph> stream;
     private TreeGraph drawnGraph = new TreeGraph();
@@ -57,6 +58,11 @@ public class TreePanel extends JPanel {
         g.setColor(Color.BLACK);
 
         for(var node : drawnGraph.nodes){
+            if(node.isLeaf)
+                g.setColor(Color.BLUE);
+            else
+                g.setColor(Color.BLACK);
+
             g.fillOval(node.x, node.y, 5, 5);
             g.drawString(node.getNodeName(), node.x, node.y - 7);
         }

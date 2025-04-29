@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DependencyFrame extends JFrame {
-    final Path withJavaUtilImportPath = Paths.get("src\\main\\java\\org\\example\\Main.java");
+    final Path withJavaUtilImportPath = Paths.get("src\\main\\java\\APP\\Main.java");
 
     public DependencyFrame() {
         this.setSize(800, 600);
