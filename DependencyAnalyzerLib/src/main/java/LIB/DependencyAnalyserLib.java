@@ -52,11 +52,11 @@ public final class DependencyAnalyserLib {
         FileSystem fs = vertx.fileSystem();
 
         return fs.exists(path).compose(doesExist -> {
-            if (!doesExist || !path.contains(JAVA_EXTENSION)) return Future.failedFuture(new NotFoundException(""));
+            if (!doesExist) return Future.failedFuture(new NotFoundException(""));
             return fs.lprops(path);
         }).compose(dirProps -> {
             if (!dirProps.isDirectory()) return Future.failedFuture(new IllegalArgumentException(""));
-            return fs.readDir(path, "*.java");
+            return fs.readDir(path);
         }).compose(dirFilePaths -> {
 
             List<Future<String>> filePaths = new ArrayList<>();
