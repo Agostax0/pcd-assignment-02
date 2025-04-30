@@ -44,7 +44,8 @@ public class ReactiveDependencyLib {
         else{
             subject.onNext(getClassDependencies(path).treeGraph);
             try {
-                Thread.sleep(2000);
+                Thread.sleep(2000);//to slow it down, it's too quick on the ui
+                //TODO it could be done from rxjava
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

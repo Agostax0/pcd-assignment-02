@@ -23,6 +23,9 @@ public class DependencyRef {
     }
 
     public List<String> getPackageTree(){
+        if(packageDeclaration == null)
+            return new ArrayList<>();
+
         if(packageDeclaration.getName().hasQualifier())
             return navigatePackage(packageDeclaration.getName(), new ArrayList<>());
         return List.of(packageDeclaration.getName().getIdentifier());

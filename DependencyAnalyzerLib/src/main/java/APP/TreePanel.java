@@ -9,53 +9,64 @@ import shared.TreeGraph.GraphNode;
 
 import javax.swing.*;
 import java.awt.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class
 TreePanel extends JPanel {
-
     private TreeGraph drawnGraph = new TreeGraph();
+    private int classesDiscovered = 0;
 
-    public TreePanel(Flowable<TreeGraph> graphStream) {
+    public TreePanel() {
+        this.setLayout(new BorderLayout());
 
-        graphStream
-                .observeOn(Schedulers.computation())
-                .subscribe(graph -> {
-                    System.out.println("received graph");
-                    SwingUtilities.invokeLater(()->{
-                        drawnGraph.addTree(graph);
-                        this.repaint();
+        var toolBox = new JPanel();
+        toolBox.setLayout(new GridLayout(1, 4));
+
+        var pathSelector = new JTextArea();
+        var startBtn = new JButton("Start");
+        var classesAnalyzed = new JTextField("0");
+        var dependenciesFound = new JTextField("0");
+        startBtn.addActionListener((l) -> {
+            ReactiveDependencyLib.generateGraphStream(Path.of(pathSelector.getText()))
+                    .observeOn(Schedulers.computation())
+                    .subscribe(graph -> {
+                        SwingUtilities.invokeLater(() -> {
+                            drawnGraph.addTree(graph);
+                            classesDiscovered++;
+                            classesAnalyzed.setText(classesDiscovered + "");
+                            dependenciesFound.setText(drawnGraph.nodes.stream().filter(it -> !it.isPackageNode).count() + "");
+                            this.repaint();
+                        });
                     });
-                });
-
-
-    }
-
-    public TreePanel(TreeGraph graph) {
-        SwingUtilities.invokeLater(() -> {
-            drawnGraph.addTree(graph);
         });
+
+        toolBox.add(pathSelector);
+        toolBox.add(startBtn);
+        toolBox.add(classesAnalyzed);
+        toolBox.add(dependenciesFound);
+
+        this.add(BorderLayout.SOUTH,toolBox);
     }
 
     @Override
     protected void paintComponent(Graphics g) {
-        System.out.println("paint " + drawnGraph.nodes);
         super.paintComponent(g);
         setBackground(Color.WHITE);
 
         computeNodesPositions();
 
-
         var offsetX = 50;
         var offsetY = 50;
 
-        for(var node : drawnGraph.nodes){
+        for (var node : drawnGraph.nodes) {
             g.setColor(Color.BLACK);
-            if(node.isLeaf)
+            if (node.isLeaf)
                 g.setColor(Color.BLUE);
-            if(node.isPackageNode)
+            if (node.isPackageNode)
                 g.setColor(Color.GREEN);
 
             node.x += offsetX;
@@ -66,22 +77,18 @@ TreePanel extends JPanel {
         }
 
 
-        for(var arc: drawnGraph.arcs){
+        for (var arc : drawnGraph.arcs) {
             g.setColor(Color.BLACK);
 
             GraphNode a = arc.start;
 
-            if(a.x == 0 && a.y == 0){
+            if (a.x == 0 && a.y == 0) {
                 final GraphNode tempA = a;
                 a = drawnGraph.nodes.stream().filter(it -> it.equals(tempA) && it.x != 0 && it.y != 0).findFirst().get();
             }
 
             GraphNode b = arc.end;
-
-            if(a.isPackageNode || b.isPackageNode)
-                g.setColor(Color.GREEN);
-
-            g.drawLine(a.x+2, a.y+2, b.x+2, b.y+2);
+            g.drawLine(a.x + 2, a.y + 2, b.x + 2, b.y + 2);
         }
     }
 
@@ -128,16 +135,15 @@ TreePanel extends JPanel {
                             it.getNodeLevel() == finalI && !alreadyPresentNodes.contains(it))
                     .toList(); //list of all nodes in the current level not already added to the map
 
-            if(currentLevelNodes.isEmpty()){
+            if (currentLevelNodes.isEmpty()) {
                 currentLevelNodes = alreadyPresentNodes;
-            }
-            else{
+            } else {
                 alreadyPresentNodes.addAll(currentLevelNodes);
             }
 
-            for(var currentLevelNode : currentLevelNodes){ //adding each node's children in order
-                if(orderedTree.containsKey(i+1)){
-                    var childNodes = orderedTree.get(i+1);
+            for (var currentLevelNode : currentLevelNodes) { //adding each node's children in order
+                if (orderedTree.containsKey(i + 1)) {
+                    var childNodes = orderedTree.get(i + 1);
                     childNodes.addAll((drawnGraph.arcs.stream()
                             .filter(it -> it.start.equals(currentLevelNode))
                             .map(it -> it.end)
@@ -152,12 +158,11 @@ TreePanel extends JPanel {
         for (int i = 0; i <= numLevels; i++) {
             var orderedNodes = orderedTree.get(i);
 
-            for(int j = 0; j < orderedNodes.size(); j++){
+            for (int j = 0; j < orderedNodes.size(); j++) {
                 var currentNode = orderedNodes.get(j);
                 currentNode.x = horizontalOffsetBetweenNodes * (i + 1); //based on node level
                 currentNode.y = verticalOffsetBetweenNodes * (j + 1); //based on how many nodes have been added to the current level
             }
         }
-
     }
 }

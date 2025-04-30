@@ -37,7 +37,6 @@ public class TreeGraph {
     }
 
     public void addFromRef(DependencyRef dependencyRef, final String fileName) {
-        Set<GraphNode> importLeafNodes = new HashSet<>();
         List<List<String>> importsTrees = dependencyRef.getImportsTrees();
         for (var importTree : importsTrees) { // [[java,util,List],[java.io.File]];
 
@@ -51,8 +50,6 @@ public class TreeGraph {
                         isLeaf,
                         false
                 );
-                if(isLeaf)
-                    importLeafNodes.add(newNode);
                 graphNodes.add(newNode);
             }
 
@@ -75,33 +72,6 @@ public class TreeGraph {
             }
         }
 
-
-
-/*
-        var packageTree = dependencyRef.getPackageTree();
-        packageTree.addLast(fileName);
-        List<GraphNode> packageNodes = new ArrayList<>();
-        for(int i = 0; i < packageTree.size(); i++){ // [org.javaparser.samples.(fileName)]
-            GraphNode newNode = new GraphNode(
-                    packageTree.get(i),
-                    i,
-                    i > 0 ? packageNodes.get(i - 1) : null,
-                    false,
-                    true
-            );
-
-            packageNodes.add(newNode);
-            this.nodes.add(newNode);
-        }
-
-        for(var packageNode : packageNodes.stream().filter(it -> it.fatherNode != null).toList()){
-            this.arcs.add(new Pair<>(packageNode.fatherNode, packageNode));
-        }
-
-        var packageFileNameNode = packageNodes.getLast();
-
-        importLeafNodes.forEach(importLeafNode -> this.arcs.add(new Pair<>(importLeafNode, packageFileNameNode)));
-*/
     }
 
     public void addTree(final TreeGraph newTree) {
