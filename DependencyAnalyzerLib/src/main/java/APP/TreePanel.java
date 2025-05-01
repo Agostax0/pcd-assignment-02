@@ -27,15 +27,22 @@ TreePanel extends JPanel {
         toolBox.setLayout(new GridLayout(1, 4));
 
         var pathSelector = new JTextArea();
+        pathSelector.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         var startBtn = new JButton("Start");
-        var classesAnalyzed = new JTextField("0");
-        var dependenciesFound = new JTextField("0");
+        var classesAnalyzed = new JLabel("0");
+        classesAnalyzed.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        var dependenciesFound = new JLabel("0");
+        dependenciesFound.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         startBtn.addActionListener((l) -> {
+            startBtn.setText("Running");
             ReactiveDependencyLib.generateGraphStream(Path.of(pathSelector.getText()))
                     .observeOn(Schedulers.computation())
-                    .subscribe(graph -> {
+                    .doOnComplete(() ->{
+                        startBtn.setText("Start");
+                    })
+                    .subscribe(classDepsReport -> {
                         SwingUtilities.invokeLater(() -> {
-                            drawnGraph.addTree(graph);
+                            drawnGraph.addTree(classDepsReport.treeGraph);
                             classesDiscovered++;
                             classesAnalyzed.setText(classesDiscovered + "");
                             dependenciesFound.setText(drawnGraph.nodes.stream().filter(it -> !it.isPackageNode).count() + "");

@@ -6,6 +6,8 @@ import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.FlowableEmitter;
+import io.reactivex.rxjava3.core.Scheduler;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import shared.DependencyRef;
 import shared.DependencyVisitor;
 import shared.TreeGraph;
@@ -15,15 +17,15 @@ import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class ReactiveDependencyLib {
     private final static String JAVA_EXTENSION = ".java";
 
-    private ReactiveDependencyLib(){}
+    private ReactiveDependencyLib() {
+    }
 
-    public static Flowable<TreeGraph> generateGraphStream(Path path){
-
-
+    public static Flowable<ClassDepsReport> generateGraphStream(Path path) {
         return Flowable.create(emitter -> {
             new Thread(()->{
                 getProjectDependencies(path, emitter);
@@ -31,7 +33,7 @@ public class ReactiveDependencyLib {
         }, BackpressureStrategy.BUFFER);
     }
 
-    private static void getProjectDependencies(final Path path, @NonNull FlowableEmitter<TreeGraph> subject ) {
+    private static void getProjectDependencies(final Path path, @NonNull FlowableEmitter<ClassDepsReport> subject ) {
         var file = path.toFile();
         if(file.isDirectory()) {
 
@@ -42,7 +44,7 @@ public class ReactiveDependencyLib {
             }
         }
         else{
-            subject.onNext(getClassDependencies(path).treeGraph);
+            subject.onNext(getClassDependencies(path));
             try {
                 Thread.sleep(2000);//to slow it down, it's too quick on the ui
                 //TODO it could be done from rxjava
