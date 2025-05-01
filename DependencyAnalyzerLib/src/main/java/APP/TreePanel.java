@@ -1,8 +1,11 @@
 package APP;
 
+import LIB.report.ClassDepsReport;
 import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.PublishSubject;
+import io.reactivex.rxjava3.subjects.Subject;
 import shared.Pair;
 import shared.TreeGraph;
 import shared.TreeGraph.GraphNode;
@@ -17,8 +20,12 @@ import java.util.stream.Collectors;
 
 public class
 TreePanel extends JPanel {
+    public static final String START = "Start";
+    public static final String RUNNING = "Running";
     private TreeGraph drawnGraph = new TreeGraph();
     private int classesDiscovered = 0;
+
+    private Flowable<ClassDepsReport> subscribed;
 
     public TreePanel() {
         this.setLayout(new BorderLayout());
@@ -34,21 +41,24 @@ TreePanel extends JPanel {
         var dependenciesFound = new JLabel("0");
         dependenciesFound.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         startBtn.addActionListener((l) -> {
-            startBtn.setText("Running");
-            ReactiveDependencyLib.generateGraphStream(Path.of(pathSelector.getText()))
-                    .observeOn(Schedulers.computation())
-                    .doOnComplete(() ->{
-                        startBtn.setText("Start");
-                    })
-                    .subscribe(classDepsReport -> {
-                        SwingUtilities.invokeLater(() -> {
-                            drawnGraph.addTree(classDepsReport.treeGraph);
-                            classesDiscovered++;
-                            classesAnalyzed.setText(classesDiscovered + "");
-                            dependenciesFound.setText(drawnGraph.nodes.stream().filter(it -> !it.isPackageNode).count() + "");
-                            this.repaint();
+            if(startBtn.getText().equals(START)){
+                startBtn.setText(RUNNING);
+                subscribed = ReactiveDependencyLib.generateGraphStream(Path.of(pathSelector.getText()));
+                subscribed
+                        .subscribeOn(Schedulers.computation())
+                        .doOnComplete(() ->{
+                            startBtn.setText(START);
+                        })
+                        .subscribe(classDepsReport -> {
+                            SwingUtilities.invokeLater(() -> {
+                                drawnGraph.addTree(classDepsReport.treeGraph);
+                                classesDiscovered++;
+                                classesAnalyzed.setText(classesDiscovered + "");
+                                dependenciesFound.setText(drawnGraph.nodes.stream().filter(it -> !it.isPackageNode).count() + "");
+                                this.repaint();
+                            });
                         });
-                    });
+            }
         });
 
         toolBox.add(pathSelector);
@@ -66,8 +76,8 @@ TreePanel extends JPanel {
 
         computeNodesPositions();
 
-        var offsetX = 50;
-        var offsetY = 50;
+        var offsetX = 30;
+        var offsetY = 30;
 
         for (var node : drawnGraph.nodes) {
             g.setColor(Color.BLACK);
@@ -95,7 +105,7 @@ TreePanel extends JPanel {
             }
 
             GraphNode b = arc.end;
-            g.drawLine(a.x + 2, a.y + 2, b.x + 2, b.y + 2);
+            drawArrowLine(g, a.x + 3, a.y +3 , b.x +3 , b.y +3 , 5, 10);
         }
     }
 
@@ -171,5 +181,26 @@ TreePanel extends JPanel {
                 currentNode.y = verticalOffsetBetweenNodes * (j + 1); //based on how many nodes have been added to the current level
             }
         }
+    }
+
+    private void drawArrowLine(Graphics g, int x1, int y1, int x2, int y2, int d, int h) {
+        int dx = x2 - x1, dy = y2 - y1;
+        double D = Math.sqrt(dx*dx + dy*dy);
+        double xm = D - d, xn = xm, ym = h, yn = -h, x;
+        double sin = dy / D, cos = dx / D;
+
+        x = xm*cos - ym*sin + x1;
+        ym = xm*sin + ym*cos + y1;
+        xm = x;
+
+        x = xn*cos - yn*sin + x1;
+        yn = xn*sin + yn*cos + y1;
+        xn = x;
+
+        int[] xpoints = {x2, (int) xm, (int) xn};
+        int[] ypoints = {y2, (int) ym, (int) yn};
+
+        g.drawLine(x1, y1, x2, y2);
+        g.fillPolygon(xpoints, ypoints, 3);
     }
 }

@@ -27,9 +27,9 @@ public class ReactiveDependencyLib {
 
     public static Flowable<ClassDepsReport> generateGraphStream(Path path) {
         return Flowable.create(emitter -> {
-            new Thread(()->{
+            Schedulers.io().scheduleDirect(()->{
                 getProjectDependencies(path, emitter);
-            }).start();
+            });
         }, BackpressureStrategy.BUFFER);
     }
 
