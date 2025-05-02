@@ -29,6 +29,7 @@ public class ReactiveDependencyLib {
         return Flowable.create(emitter -> {
             Schedulers.io().scheduleDirect(()->{
                 getProjectDependencies(path, emitter);
+                emitter.onComplete();
             });
         }, BackpressureStrategy.BUFFER);
     }
@@ -46,7 +47,7 @@ public class ReactiveDependencyLib {
         else{
             subject.onNext(getClassDependencies(path));
             try {
-                Thread.sleep(2000);//to slow it down, it's too quick on the ui
+                Thread.sleep(1000);//to slow it down, it's too quick on the ui
                 //TODO it could be done from rxjava
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
