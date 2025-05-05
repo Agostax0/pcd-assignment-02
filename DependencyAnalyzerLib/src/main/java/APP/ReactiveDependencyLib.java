@@ -24,8 +24,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ReactiveDependencyLib {
     private final static String JAVA_EXTENSION = ".java";
 
-    private static AtomicInteger num = new AtomicInteger();
-
     private ReactiveDependencyLib() {
     }
 
@@ -33,7 +31,6 @@ public class ReactiveDependencyLib {
         return Flowable.create(emitter -> {
             Schedulers.io().scheduleDirect(()->{
                 getProjectDependencies(path, emitter);
-                System.out.println(num);
                 emitter.onComplete();
             });
         }, BackpressureStrategy.BUFFER);
@@ -56,7 +53,6 @@ public class ReactiveDependencyLib {
     }
 
     private static ClassDepsReport getClassDependencies(final Path path) {
-        System.out.println(path.toString());
         var tree = new TreeGraph();
 
         var file = path.toFile();
