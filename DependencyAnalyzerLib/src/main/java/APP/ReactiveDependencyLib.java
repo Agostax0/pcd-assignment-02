@@ -19,9 +19,12 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ReactiveDependencyLib {
     private final static String JAVA_EXTENSION = ".java";
+
+    private static AtomicInteger num = new AtomicInteger();
 
     private ReactiveDependencyLib() {
     }
@@ -30,6 +33,7 @@ public class ReactiveDependencyLib {
         return Flowable.create(emitter -> {
             Schedulers.io().scheduleDirect(()->{
                 getProjectDependencies(path, emitter);
+                System.out.println(num);
                 emitter.onComplete();
             });
         }, BackpressureStrategy.BUFFER);
@@ -46,7 +50,8 @@ public class ReactiveDependencyLib {
             }
         }
         else{
-            subject.onNext(getClassDependencies(path));
+            if(file.getName().contains(JAVA_EXTENSION))
+                subject.onNext(getClassDependencies(path));
         }
     }
 
@@ -58,7 +63,6 @@ public class ReactiveDependencyLib {
 
         if(file.exists() && file.getName().contains(JAVA_EXTENSION)){
             try{
-
                 var config = new ParserConfiguration();
                 config.setLanguageLevel(ParserConfiguration.LanguageLevel.JAVA_21);
                 StaticJavaParser.setConfiguration(config);
