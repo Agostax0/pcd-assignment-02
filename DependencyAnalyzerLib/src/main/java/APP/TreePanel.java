@@ -2,10 +2,7 @@ package APP;
 
 import LIB.report.ClassDepsReport;
 import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import io.reactivex.rxjava3.subjects.PublishSubject;
-import io.reactivex.rxjava3.subjects.Subject;
 import shared.Pair;
 import shared.TreeGraph;
 import shared.TreeGraph.GraphNode;
@@ -13,17 +10,17 @@ import shared.TreeGraph.GraphNode;
 import javax.swing.*;
 import java.awt.*;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class
 TreePanel extends JPanel {
     public static final String START = "Start";
     public static final String RUNNING = "Running";
     private TreeGraph drawnGraph = new TreeGraph();
-    private int classesDiscovered = 0;
+    private static String CLASSES_ANALYZED = "Classes Analyzed: ";
+    private static String DEPENDENCIES_FOUND = "Dependencies Found: ";
+    private int classesAnalyzed = 0;
 
     private Flowable<ClassDepsReport> subscribed;
 
@@ -36,11 +33,14 @@ TreePanel extends JPanel {
         var pathSelector = new JTextArea();
         pathSelector.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         var startBtn = new JButton("Start");
-        var classesAnalyzed = new JLabel("0");
+        var classesAnalyzed = new JLabel(CLASSES_ANALYZED + 0);
         classesAnalyzed.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        var dependenciesFound = new JLabel("0");
+        var dependenciesFound = new JLabel(DEPENDENCIES_FOUND + 0);
         dependenciesFound.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         startBtn.addActionListener((l) -> {
+            drawnGraph.nodes.clear();
+            drawnGraph.arcs.clear();
+
             if(startBtn.getText().equals(START)){
                 startBtn.setText(RUNNING);
                 subscribed = ReactiveDependencyLib.generateGraphStream(Path.of(pathSelector.getText()));
@@ -52,9 +52,9 @@ TreePanel extends JPanel {
                         .subscribe(classDepsReport -> {
                             SwingUtilities.invokeLater(() -> {
                                 drawnGraph.addTree(classDepsReport.treeGraph);
-                                classesDiscovered++;
-                                classesAnalyzed.setText(classesDiscovered + "");
-                                dependenciesFound.setText(drawnGraph.nodes.stream().filter(it -> !it.isPackageNode).count() + "");
+                                this.classesAnalyzed++;
+                                classesAnalyzed.setText(CLASSES_ANALYZED + this.classesAnalyzed);
+                                dependenciesFound.setText(DEPENDENCIES_FOUND + drawnGraph.nodes.stream().filter(it -> !it.isPackageNode).count() + "");
                                 this.repaint();
                             });
                         });

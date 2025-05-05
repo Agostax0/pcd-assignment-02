@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 public class DependencyFrame extends JFrame {
 
     public DependencyFrame() {
-        this.setSize(1920, 1080);
+        this.setSize(1200, 800);
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
