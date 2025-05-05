@@ -1,13 +1,6 @@
 package APP;
 
-import LIB.DependencyAnalyserLib;
-import io.reactivex.rxjava3.core.Flowable;
-import shared.TreeGraph;
-
 import javax.swing.*;
-import java.awt.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class DependencyFrame extends JFrame {
 
