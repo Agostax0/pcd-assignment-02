@@ -1,6 +1,7 @@
 package APP;
 
 import LIB.report.ClassDepsReport;
+import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.StaticJavaParser;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.BackpressureStrategy;
@@ -46,22 +47,21 @@ public class ReactiveDependencyLib {
         }
         else{
             subject.onNext(getClassDependencies(path));
-            try {
-                Thread.sleep(1000);//to slow it down, it's too quick on the ui
-                //TODO it could be done from rxjava
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 
     private static ClassDepsReport getClassDependencies(final Path path) {
+        System.out.println(path.toString());
         var tree = new TreeGraph();
 
         var file = path.toFile();
 
         if(file.exists() && file.getName().contains(JAVA_EXTENSION)){
             try{
+
+                var config = new ParserConfiguration();
+                config.setLanguageLevel(ParserConfiguration.LanguageLevel.JAVA_21);
+                StaticJavaParser.setConfiguration(config);
                 var dependencyRef = new DependencyRef();
                 new DependencyVisitor().visit(StaticJavaParser.parse(file), dependencyRef);
                 tree.addFromRef(dependencyRef, file.getName());

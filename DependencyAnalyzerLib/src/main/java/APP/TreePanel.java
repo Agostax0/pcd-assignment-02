@@ -54,7 +54,7 @@ TreePanel extends JPanel {
                                 drawnGraph.addTree(classDepsReport.treeGraph);
                                 this.classesAnalyzed++;
                                 classesAnalyzed.setText(CLASSES_ANALYZED + this.classesAnalyzed);
-                                dependenciesFound.setText(DEPENDENCIES_FOUND + drawnGraph.nodes.stream().filter(it -> !it.isPackageNode).count() + "");
+                                dependenciesFound.setText(DEPENDENCIES_FOUND + drawnGraph.nodes.stream().filter(it -> !it.isPackageNode).count());
                                 this.repaint();
                             });
                         });
@@ -105,6 +105,11 @@ TreePanel extends JPanel {
             }
 
             GraphNode b = arc.end;
+            if (b.x == 0 && b.y == 0) {
+                final GraphNode tempB = b;
+                b = drawnGraph.nodes.stream().filter(it -> it.equals(tempB) && it.x != 0 && it.y != 0).findFirst().get();
+            }
+
             drawArrowLine(g, a.x + 3, a.y +3 , b.x +3 , b.y +3 , 5, 10);
         }
     }
