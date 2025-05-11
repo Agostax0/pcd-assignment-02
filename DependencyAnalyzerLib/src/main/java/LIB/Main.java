@@ -5,8 +5,9 @@ import java.nio.file.Paths;
 
 
 public class Main {
-    private static final Path filePath = Paths.get("C:\\Users\\agost\\IdeaProjects\\pcd-assignment-02\\DependencyAnalyzerLib\\src\\main\\resources\\withjavautil\\ReversePolishNotation.java");
-    private static final Path packagePath = Paths.get("src\\main\\java\\");
+    private static final Path filePath = Paths.get("src\\main\\resources\\MyClass.java");
+    private static final Path packagePath = Paths.get("src\\main\\resources\\");
+    private static final Path projectPath = Paths.get("src\\main\\resources\\");
 
     public static void main(String[] args) throws Exception {
 
@@ -15,5 +16,16 @@ public class Main {
             else System.out.println(res.result().getGraph().nodes + "\n" + res.result().getGraph().arcs);
         }).onFailure(Throwable::printStackTrace);
 
+
+        DependencyAnalyserLib.getPackageDependencies(packagePath.toString()).onComplete(res -> {
+            if(res.failed() && res.result() == null){ System.out.println("Failed " + res.cause().toString());}
+            else System.out.println(res.result().getGraph().nodes + "\n" + res.result().getGraph().arcs);
+        }).onFailure(Throwable::printStackTrace);
+
+
+        DependencyAnalyserLib.getProjectDependencies(projectPath.toString(), null).onComplete(res -> {
+            if(res.failed() && res.result() == null){ System.out.println("Failed " + res.cause().toString());}
+            else System.out.println(res.result().getGraph().nodes + "\n" + res.result().getGraph().arcs);
+        }).onFailure(Throwable::printStackTrace);
     }
 }
